@@ -1,3 +1,39 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+.main {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+
+.blue {
+  --accent: #55cffa;
+}
+.lime {
+  --accent: #e6ee96;
+}
+.purple {
+  --accent: #b095f6;
+}
+
+.orange {
+  --accent: #ffb37e;
+}
+.gold {
+  --accent: #ffcf7d;
+}
+@layer utilities {
+  .button {
+    @apply w-5 aspect-square rounded-full;
+    background-color: var(--accent);
+  }
+  .note {
+    @apply overflow-clip text-xl w-72 aspect-square  rounded-3xl p-4 relative;
+    background-color: var(--accent);
+  }
+}
