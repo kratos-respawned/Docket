@@ -4,7 +4,7 @@ import Note, { Button } from "./Note";
 export default function Home() {
   return (
     <main className="main   bg-white  py-7 ">
-      <nav className=" h-full  text-black  px-7 border-r-2 border-r-slate-200">
+      <nav className=" h-full  text-black  px-3 sm:px-7 border-r-2 border-r-slate-200">
         <h1 className="sticky top-4 py-2 font-bold text-xl">Docket</h1>
         <Navbar />
       </nav>
@@ -44,7 +44,7 @@ export default function Home() {
           <Note accent="orange" index={4} />
         </section>
       </main>
-      <Button />
+      {/* <Button /> */}
     </main>
   );
 }

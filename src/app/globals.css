@@ -33,7 +33,7 @@
     background-color: var(--accent);
   }
   .note {
-    @apply overflow-clip text-xl w-72 aspect-square  rounded-3xl p-4 relative;
+    @apply overflow-clip text-base sm:text-xl w-60 sm:w-72 aspect-square  rounded-3xl p-4 relative;
     background-color: var(--accent);
   }
 }

@@ -10,10 +10,10 @@ function Note({ index, accent }: { index: number; accent?: string }) {
       <textarea
         name=""
         id=""
-        onChange={() => {}}
-        readOnly={editing}
-        className="overflow-clip resize-none  bg-transparent outline-none border-none h-full w-full"
-        value="The beginning of screenless design: UI jobs to be take over by Solution
+        // onChange={() => {}}
+        // readOnly={editing}
+        className="overflow-clip resize-none  bg-transparent outline-none border-none h-full w-full text-base sm:text-xl"
+        defaultValue="The beginning of screenless design: UI jobs to be take over by Solution
         Architect"
       />
 
@@ -51,7 +51,7 @@ function Note({ index, accent }: { index: number; accent?: string }) {
 export const Button = () => {
   return (
     <button
-      className="fixed bottom-4 right-4 w-14 aspect-square rounded-full bg-purple-600 z-10"
+      className={`fixed bottom-4 right-4 w-14 aspect-square rounded-full bg-purple-600 z-10`}
       onClick={() => {
         globalThis.window.scrollTo(0, 0);
       }}
