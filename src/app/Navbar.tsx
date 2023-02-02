@@ -26,14 +26,14 @@ function Navbar() {
                 key={index}
                 onClick={async () => {
                   let newNote = {
-                    editing: true,
+                    editing: false,
                     accent: props.accent,
                     content: ``,
                     lastModified: new Date().toDateString(),
                   };
                   addDoc(collectionRef, newNote).then((docRef) => {
                     console.log("Document written with ID: ", docRef.id);
-                    createNote({ ...newNote, id: docRef.id });
+                    createNote({ ...newNote, id: docRef.id, editing: true });
                   });
                 }}
                 className={`button ${props.accent}`}

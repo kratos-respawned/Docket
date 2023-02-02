@@ -29,10 +29,11 @@ export default function Notes() {
       });
     }
     if (firstRender.current) {
+      fetchNotes();
       firstRender.current = false;
       return;
     }
-    fetchNotes();
+
     return () => {
       emptyNote();
     };
@@ -75,6 +76,10 @@ function Note(props: TypeNote) {
       .notes.find((note) => note.id === id);
     if (!currentNote) return;
     if (!text.current) return;
+    // check if the note exists in the database
+    // if it does, update it
+    // if it doesn't, add it
+
     updateNote(id, { ...props, editing: false, content: text.current.value });
     const noteDoc = doc(db, "notes", id);
     updateDoc(noteDoc, {
