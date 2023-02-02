@@ -17,20 +17,18 @@ function Navbar() {
       </button>
       {visible && (
         <>
-          {buttonProps.map((props) => {
+          {buttonProps.map((props, index) => {
             return (
               <button
+                key={index}
                 onClick={() => {
                   createNote({
-                    id: Math.random().toString(36),
+                    id: Date.now().toString() + index + Math.random(),
                     editing: true,
                     accent: props.accent,
-                    content: `
-                    The beginning of screenless design: UI jobs to be take over by Solution
-                    `,
+                    content: ``,
                     lastModified: new Date().toDateString(),
                   });
-                  setVisibility(false);
                 }}
                 className={`button ${props.accent}`}
               />

@@ -1,13 +1,17 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Note as TypeNote, useNotes } from "@/db/store";
 export default function Notes() {
   const notes = useNotes((state) => state.notes);
   return (
     <section className="flex flex-wrap gap-4 ">
-      {notes.map((note: TypeNote) => {
-        return <Note key={note.id} {...note} />;
-      })}
+      {notes.length === 0 ? (
+        <h1 className="text-2xl">No notes yet</h1>
+      ) : (
+        notes.map((note: TypeNote) => {
+          return <Note key={note.id} {...note} />;
+        })
+      )}
     </section>
   );
 }
@@ -21,6 +25,7 @@ function Note(props: TypeNote) {
   });
   return (
     <form
+      key={props.id}
       onSubmit={(e) => {
         e.preventDefault();
         if (!text.current?.value) return;
@@ -39,14 +44,16 @@ function Note(props: TypeNote) {
         name=""
         id=""
         ref={text}
+        onBlur={() => {
+          if (text.current?.value === "") removeNote(props.id);
+        }}
         readOnly={!props.editing}
-        className="overflow-clip resize-none  bg-transparent outline-none border-none h-full w-full text-base sm:text-xl"
-      >
-        {props.content}
-      </textarea>
-
+        placeholder="Type something..."
+        defaultValue={props.content}
+        className="overflow-clip resize-none   bg-transparent outline-none border-none h-full w-full text-base sm:text-xl"
+      />
       <div className="absolute w-full  py-3 bg-inherit flex justify-between items-center bottom-0 left-0 px-4">
-        <p className="text-sm">May 21, 2020</p>
+        <p className="text-sm">{props.lastModified}</p>
         {props.editing ? (
           <div className="flex gap-2">
             <button

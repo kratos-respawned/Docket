@@ -13,19 +13,24 @@
 
 .blue {
   --accent: #55cffa;
+  --text: #275f72;
 }
 .lime {
   --accent: #e6ee96;
+  --text: #585858;
 }
 .purple {
   --accent: #b095f6;
+  --text: #5e5084;
 }
 
 .orange {
   --accent: #ffb37e;
+  --text: #735139;
 }
 .gold {
   --accent: #ffcf7d;
+  --text: #695534;
 }
 @layer utilities {
   .button {
@@ -35,5 +40,9 @@
   .note {
     @apply overflow-clip text-base sm:text-xl w-60 sm:w-72 aspect-square  rounded-3xl p-4 relative;
     background-color: var(--accent);
+    color: var(--text);
+  }
+  .note > textarea::placeholder {
+    color: var(--text);
   }
 }
