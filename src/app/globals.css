@@ -45,4 +45,8 @@
   .note > textarea::placeholder {
     color: var(--text);
   }
+  .note .delete {
+    @apply shadow-lg;
+    /* background-color: red; */
+  }
 }

@@ -1,7 +1,6 @@
 import Navbar from "./Navbar";
 import Notes, { Button } from "./Notes";
-
-export default function Home() {
+export default async function Home() {
   return (
     <main className="main   bg-white  py-7 ">
       <nav className=" h-full  text-black  px-3 sm:px-7 border-r-2 border-r-slate-200">

@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import { useNotes } from "@/db/store";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "@/firebase/configs";
 function Navbar() {
+  const collectionRef = collection(db, "notes");
   const createNote = useNotes((state) => state.addNote);
   const [visible, setVisibility] = useState(false);
   return (
@@ -21,13 +24,16 @@ function Navbar() {
             return (
               <button
                 key={index}
-                onClick={() => {
-                  createNote({
-                    id: Date.now().toString() + index + Math.random(),
+                onClick={async () => {
+                  let newNote = {
                     editing: true,
                     accent: props.accent,
                     content: ``,
                     lastModified: new Date().toDateString(),
+                  };
+                  addDoc(collectionRef, newNote).then((docRef) => {
+                    console.log("Document written with ID: ", docRef.id);
+                    createNote({ ...newNote, id: docRef.id });
                   });
                 }}
                 className={`button ${props.accent}`}

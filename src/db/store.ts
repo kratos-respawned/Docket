@@ -11,6 +11,7 @@ type NoteState = {
     addNote: (note: Note) => void;
     removeNote: (id: string) => void;
     updateNote: (id: string, newNote: Note) => void;
+    emptyNotes: () => void;
 };
 export const useNotes = create<NoteState>((set) => ({
     notes: [] as Note[],
@@ -20,5 +21,7 @@ export const useNotes = create<NoteState>((set) => ({
         notes: state.notes.map((note) => {
             return note.id === id ? newNote : note;
         })
-    }))
+    })),
+    emptyNotes: () => set(() => ({ notes: [] }))
+
 }))

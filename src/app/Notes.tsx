@@ -1,14 +1,49 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { Note as TypeNote, useNotes } from "@/db/store";
+import { MdDelete, MdEdit, MdOutlineSave } from "react-icons/md";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
+import { db } from "@/firebase/configs";
 export default function Notes() {
-  const notes = useNotes((state) => state.notes);
+  const firstRender = useRef(true);
+  const collectionRef = collection(db, "notes");
+  const addNote = useNotes((state) => state.addNote);
+  const emptyNote = useNotes((state) => state.emptyNotes);
+  useEffect(() => {
+    async function fetchNotes() {
+      let val = await getDocs(collectionRef);
+      val.docs.map((doc) => {
+        addNote({
+          editing: doc.data().editing,
+          content: doc.data().content,
+          lastModified: doc.data().lastModified,
+          accent: doc.data().accent,
+          id: doc.id,
+        });
+      });
+    }
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    fetchNotes();
+    return () => {
+      emptyNote();
+    };
+  }, []);
+  const list = useNotes((state) => state.notes);
   return (
     <section className="flex flex-wrap gap-4 ">
-      {notes.length === 0 ? (
+      {list.length === 0 ? (
         <h1 className="text-2xl">No notes yet</h1>
       ) : (
-        notes.map((note: TypeNote) => {
+        list.map((note: TypeNote) => {
           return <Note key={note.id} {...note} />;
         })
       )}
@@ -23,20 +58,38 @@ function Note(props: TypeNote) {
   useEffect(() => {
     if (props.editing) text.current?.focus();
   });
+  const Delete = (id: string) => {
+    const currentNote = useNotes
+      .getState()
+      .notes.find((note) => note.id === id);
+    if (!currentNote) return;
+    const noteDoc = doc(db, "notes", id);
+    removeNote(id);
+    deleteDoc(noteDoc).catch(() => {
+      useNotes().addNote(currentNote);
+    });
+  };
+  const Update = (id: string) => {
+    const currentNote = useNotes
+      .getState()
+      .notes.find((note) => note.id === id);
+    if (!currentNote) return;
+    if (!text.current) return;
+    updateNote(id, { ...props, editing: false, content: text.current.value });
+    const noteDoc = doc(db, "notes", id);
+    updateDoc(noteDoc, {
+      editing: false,
+      content: text.current?.value,
+      lastModified: new Date().toDateString(),
+    }).catch(() => {
+      updateNote(id, { ...currentNote, editing: false });
+    });
+  };
   return (
     <form
       key={props.id}
       onSubmit={(e) => {
         e.preventDefault();
-        if (!text.current?.value) return;
-        if (text.current?.value === props.content) return;
-        const newNote = {
-          ...props,
-          content: text.current?.value,
-          editing: false,
-          lastModified: new Date().toDateString(),
-        };
-        updateNote(props.id, newNote);
       }}
       className={`note ${props.accent}`}
     >
@@ -45,7 +98,7 @@ function Note(props: TypeNote) {
         id=""
         ref={text}
         onBlur={() => {
-          if (text.current?.value === "") removeNote(props.id);
+          if (text.current?.value === "") Delete(props.id);
         }}
         readOnly={!props.editing}
         placeholder="Type something..."
@@ -58,19 +111,19 @@ function Note(props: TypeNote) {
           <div className="flex gap-2">
             <button
               onClick={() => {
-                removeNote(props.id);
+                Delete(props.id);
               }}
-              className="text-white text-sm grid place-content-center w-12 aspect-square rounded-full bg-red-500 "
+              className="text-white  text-xl shadow-lg shadow-slate-700 bg-red-400  grid place-content-center w-12 aspect-square rounded-full  "
             >
-              <span>Delete</span>
+              <MdDelete />
             </button>
             <button
               onClick={() => {
-                updateNote(props.id, { ...props, editing: false });
+                Update(props.id);
               }}
-              className="text-black text-sm grid place-content-center w-12 aspect-square rounded-full bg-white "
+              className="text-black text-xl grid place-content-center w-12 aspect-square rounded-full bg-white "
             >
-              <span>Save</span>
+              <MdOutlineSave />
             </button>
           </div>
         ) : (
@@ -78,9 +131,9 @@ function Note(props: TypeNote) {
             onClick={() => {
               updateNote(props.id, { ...props, editing: true });
             }}
-            className="text-white text-sm grid place-content-center w-12 aspect-square rounded-full bg-black "
+            className="text-white text-xl grid place-content-center w-12 aspect-square rounded-full bg-black "
           >
-            <span>Edit</span>
+            <MdEdit />
           </button>
         )}
       </div>
