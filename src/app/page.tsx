@@ -1,5 +1,5 @@
 import Navbar from "./Navbar";
-import Note, { Button } from "./Note";
+import Notes, { Button } from "./Notes";
 
 export default function Home() {
   return (
@@ -36,13 +36,7 @@ export default function Home() {
           />
         </form>
         <h1 className="font-bold text-7xl my-12">Notes</h1>
-        <section className="flex flex-wrap gap-4 ">
-          <Note accent="gold" index={0} />
-          <Note accent="purple" index={1} />
-          <Note accent="blue" index={2} />
-          <Note accent="lime" index={3} />
-          <Note accent="orange" index={4} />
-        </section>
+        <Notes />
       </main>
       {/* <Button /> */}
     </main>

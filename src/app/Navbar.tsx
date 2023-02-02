@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-
+import { useNotes } from "@/db/store";
 function Navbar() {
+  const createNote = useNotes((state) => state.addNote);
   const [visible, setVisibility] = useState(false);
   return (
     <div className="sticky flex flex-col text-white gap-y-3 py-3 items-center  top-28 ">
@@ -16,15 +17,45 @@ function Navbar() {
       </button>
       {visible && (
         <>
-          <button className=" button gold" />
-          <button className="button orange" />
-          <button className="button purple" />
-          <button className="button blue" />
-          <button className="button lime" />
+          {buttonProps.map((props) => {
+            return (
+              <button
+                onClick={() => {
+                  createNote({
+                    id: Math.random().toString(36),
+                    editing: true,
+                    accent: props.accent,
+                    content: `
+                    The beginning of screenless design: UI jobs to be take over by Solution
+                    `,
+                    lastModified: new Date().toDateString(),
+                  });
+                  setVisibility(false);
+                }}
+                className={`button ${props.accent}`}
+              />
+            );
+          })}
         </>
       )}
     </div>
   );
 }
-
+const buttonProps = [
+  {
+    accent: "gold",
+  },
+  {
+    accent: "orange",
+  },
+  {
+    accent: "purple",
+  },
+  {
+    accent: "blue",
+  },
+  {
+    accent: "lime",
+  },
+];
 export default Navbar;

@@ -1,19 +1,24 @@
 import { create } from "zustand";
-interface Note {
+export interface Note {
     id: string;
     content: string;
     accent: string;
-    lastModified: Date;
+    editing: boolean;
+    lastModified: string;
 }
 type NoteState = {
     notes: Note[];
     addNote: (note: Note) => void;
     removeNote: (id: string) => void;
-    updateNote: (id: string, newNote: Note[]) => void;
+    updateNote: (id: string, newNote: Note) => void;
 };
 export const useNotes = create<NoteState>((set) => ({
     notes: [] as Note[],
     addNote: (note) => set((state) => ({ notes: [...state.notes, note] })),
     removeNote: (id) => set((state) => ({ notes: state.notes.filter((note) => note.id !== id) })),
-    updateNote: (id, note) => set((state) => ({ notes: state.notes.map((note) => (note.id === id ? note : note)) })),
+    updateNote: (id, newNote) => set((state) => ({
+        notes: state.notes.map((note) => {
+            return note.id === id ? newNote : note;
+        })
+    }))
 }))
