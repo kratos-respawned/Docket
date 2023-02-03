@@ -41,13 +41,11 @@ export default function Notes() {
   const list = useNotes((state) => state.notes);
   return (
     <section className="flex flex-wrap gap-4 ">
-      {list.length === 0 ? (
-        <h1 className="text-2xl">No notes yet</h1>
-      ) : (
-        list.map((note: TypeNote) => {
+      {
+        list.reverse().map((note: TypeNote) => {
           return <Note key={note.id} {...note} />;
         })
-      )}
+      }
     </section>
   );
 }
@@ -76,10 +74,6 @@ function Note(props: TypeNote) {
       .notes.find((note) => note.id === id);
     if (!currentNote) return;
     if (!text.current) return;
-    // check if the note exists in the database
-    // if it does, update it
-    // if it doesn't, add it
-
     updateNote(id, { ...props, editing: false, content: text.current.value });
     const noteDoc = doc(db, "notes", id);
     updateDoc(noteDoc, {
@@ -118,7 +112,7 @@ function Note(props: TypeNote) {
               onClick={() => {
                 Delete(props.id);
               }}
-              className="text-white  text-xl shadow-lg shadow-slate-700 bg-red-400  grid place-content-center w-12 aspect-square rounded-full  "
+              className="edit warn  "
             >
               <MdDelete />
             </button>
@@ -126,7 +120,7 @@ function Note(props: TypeNote) {
               onClick={() => {
                 Update(props.id);
               }}
-              className="text-black text-xl grid place-content-center w-12 aspect-square rounded-full bg-white "
+              className="edit "
             >
               <MdOutlineSave />
             </button>
@@ -136,7 +130,7 @@ function Note(props: TypeNote) {
             onClick={() => {
               updateNote(props.id, { ...props, editing: true });
             }}
-            className="text-white text-xl grid place-content-center w-12 aspect-square rounded-full bg-black "
+            className="edit "
           >
             <MdEdit />
           </button>

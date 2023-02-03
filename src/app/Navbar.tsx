@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNotes } from "@/db/store";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "@/firebase/configs";
+import { MdAdd, MdClose } from "react-icons/md";
 function Navbar() {
   const collectionRef = collection(db, "notes");
   const createNote = useNotes((state) => state.addNote);
@@ -14,9 +15,9 @@ function Navbar() {
         onClick={() => {
           setVisibility(!visible);
         }}
-        className="w-12 aspect-square rounded-full bg-black mb-7"
+        className=" aspect-square text-3xl p-3   rounded-full bg-nBlack dark:text-nBlack dark:bg-white mb-7"
       >
-        {visible ? "x" : "+"}
+        {visible ? <MdClose /> : <MdAdd />}
       </button>
       {visible && (
         <>
@@ -32,7 +33,6 @@ function Navbar() {
                     lastModified: new Date().toDateString(),
                   };
                   addDoc(collectionRef, newNote).then((docRef) => {
-                    console.log("Document written with ID: ", docRef.id);
                     createNote({ ...newNote, id: docRef.id, editing: true });
                   });
                 }}
