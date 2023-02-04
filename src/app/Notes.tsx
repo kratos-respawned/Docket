@@ -10,16 +10,18 @@ import {
 import useSWR, { KeyedMutator } from 'swr';
 import { db } from "@/firebase/configs";
 import fetcher from "@/utils/fetcher";
-export default function Notes({ initialData }: { initialData: TypeNote[] }) {
-  const { data, mutate } = useSWR("getData", fetcher);
-  let list = data;
-  if (!data) list = initialData;
+export default function Notes() {
+  const { data, mutate, isLoading } = useSWR("getData", fetcher);
+  if (!data) return <p>error</p>
+  const list = data;
+
   return (
     <section className="flex flex-wrap gap-4 ">
       {
-        (list || initialData).map((note: TypeNote) => {
-          return <Note key={note.id} del={mutate} {...note} />;
-        })
+        isLoading ? <p>Loading...</p> :
+          (list).map((note: TypeNote) => {
+            return <Note key={note.id} del={mutate} {...note} />;
+          })
       }
     </section>
   );
