@@ -19,9 +19,14 @@ export default function Notes() {
     <section className="flex flex-wrap gap-4 ">
       {
         isLoading ? <p>Loading...</p> :
-          (list).map((note: TypeNote) => {
-            return <Note key={note.id} del={mutate} {...note} />;
-          })
+          (list.length === 0 ? <p className="text-nBlack dark:text-white text-4xl">
+            No notes found. <p className="text-xl mt-4"> Click on the + button to add a new note.</p>
+          </p> :
+            (list).map((note: TypeNote) => {
+              return <Note key={note.id} del={mutate} {...note} />;
+            })
+          )
+
       }
     </section>
   );
