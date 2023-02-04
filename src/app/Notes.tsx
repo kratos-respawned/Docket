@@ -1,87 +1,75 @@
 "use client";
-import { useEffect, useRef } from "react";
-import { Note as TypeNote, useNotes } from "@/db/store";
+import { useEffect, useRef, useState } from "react";
+import { Note as TypeNote } from "@/typings/note";
 import { MdDelete, MdEdit, MdOutlineSave } from "react-icons/md";
 import {
-  collection,
   deleteDoc,
   doc,
-  getDocs,
   updateDoc,
 } from "firebase/firestore";
+import useSWR, { KeyedMutator } from 'swr';
 import { db } from "@/firebase/configs";
-export default function Notes() {
-  const firstRender = useRef(true);
-  const collectionRef = collection(db, "notes");
-  const addNote = useNotes((state) => state.addNote);
-  const emptyNote = useNotes((state) => state.emptyNotes);
-  useEffect(() => {
-    async function fetchNotes() {
-      let val = await getDocs(collectionRef);
-      val.docs.map((doc) => {
-        addNote({
-          editing: doc.data().editing,
-          content: doc.data().content,
-          lastModified: doc.data().lastModified,
-          accent: doc.data().accent,
-          id: doc.id,
-        });
-      });
-    }
-    if (firstRender.current) {
-      fetchNotes();
-      firstRender.current = false;
-      return;
-    }
-
-    return () => {
-      emptyNote();
-    };
-  }, []);
-  const list = useNotes((state) => state.notes);
+import fetcher from "@/utils/fetcher";
+export default function Notes({ initialData }: { initialData: TypeNote[] }) {
+  const { data, mutate } = useSWR("getData", fetcher);
+  let list = data;
+  if (!data) list = initialData;
   return (
     <section className="flex flex-wrap gap-4 ">
       {
-        list.reverse().map((note: TypeNote) => {
-          return <Note key={note.id} {...note} />;
+        (list || initialData).map((note: TypeNote) => {
+          return <Note key={note.id} del={mutate} {...note} />;
         })
       }
     </section>
   );
 }
 
-function Note(props: TypeNote) {
-  const text = useRef<HTMLTextAreaElement>(null);
-  const updateNote = useNotes((state) => state.updateNote);
-  const removeNote = useNotes((state) => state.removeNote);
-  useEffect(() => {
-    if (props.editing) text.current?.focus();
+
+
+
+function Note(props: {
+  editing: boolean;
+  content: string;
+  lastModified: string;
+  accent: string;
+  id: string;
+  del: KeyedMutator<TypeNote[] | undefined>
+}) {
+  const [data, setData] = useState({
+    editing: props.editing,
+    content: props.content,
+    lastModified: props.lastModified,
+    accent: props.accent,
+    id: props.id,
   });
+
+  const text = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    if (data.editing) text.current?.focus();
+  }, [data.editing]);
   const Delete = (id: string) => {
-    const currentNote = useNotes
-      .getState()
-      .notes.find((note) => note.id === id);
-    if (!currentNote) return;
+    const currentNote = data;
+    setData({ ...data, editing: false });
     const noteDoc = doc(db, "notes", id);
-    removeNote(id);
-    deleteDoc(noteDoc).catch(() => {
-      useNotes().addNote(currentNote);
+    deleteDoc(noteDoc).then(() => {
+      props.del((data: any) => {
+        return data.filter((note: any) => note.id !== id);
+      });
     });
+
   };
   const Update = (id: string) => {
-    const currentNote = useNotes
-      .getState()
-      .notes.find((note) => note.id === id);
-    if (!currentNote) return;
+    const currentNote = data;
     if (!text.current) return;
-    updateNote(id, { ...props, editing: false, content: text.current.value });
+    setData({ ...data, editing: false });
     const noteDoc = doc(db, "notes", id);
     updateDoc(noteDoc, {
       editing: false,
       content: text.current?.value,
       lastModified: new Date().toDateString(),
     }).catch(() => {
-      updateNote(id, { ...currentNote, editing: false });
+      setData({ ...currentNote, editing: false });
     });
   };
   return (
@@ -96,21 +84,21 @@ function Note(props: TypeNote) {
         name=""
         id=""
         ref={text}
-        onBlur={() => {
-          if (text.current?.value === "") Delete(props.id);
-        }}
-        readOnly={!props.editing}
+        readOnly={!data.editing}
         placeholder="Type something..."
-        defaultValue={props.content}
+        value={data.content}
+        onChange={(e) => {
+          setData({ ...data, content: e.target.value });
+        }}
         className="overflow-clip resize-none   bg-transparent outline-none border-none h-full w-full text-base sm:text-xl"
       />
       <div className="absolute w-full  py-3 bg-inherit flex justify-between items-center bottom-0 left-0 px-4">
-        <p className="text-sm">{props.lastModified}</p>
-        {props.editing ? (
+        <p className="text-sm">{data.lastModified}</p>
+        {data.editing ? (
           <div className="flex gap-2">
             <button
               onClick={() => {
-                Delete(props.id);
+                Delete(data.id);
               }}
               className="edit warn  "
             >
@@ -118,7 +106,7 @@ function Note(props: TypeNote) {
             </button>
             <button
               onClick={() => {
-                Update(props.id);
+                Update(data.id);
               }}
               className="edit "
             >
@@ -128,7 +116,7 @@ function Note(props: TypeNote) {
         ) : (
           <button
             onClick={() => {
-              updateNote(props.id, { ...props, editing: true });
+              setData({ ...data, editing: true });
             }}
             className="edit "
           >
@@ -140,15 +128,3 @@ function Note(props: TypeNote) {
   );
 }
 
-export const Button = () => {
-  return (
-    <button
-      className={`fixed bottom-4 right-4 w-14 aspect-square rounded-full bg-purple-600 z-10`}
-      onClick={() => {
-        globalThis.window.scrollTo(0, 0);
-      }}
-    >
-      Top
-    </button>
-  );
-};

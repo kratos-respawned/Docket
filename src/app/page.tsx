@@ -1,8 +1,21 @@
 import { db } from "@/firebase/configs";
+import { Note } from "@/typings/note";
 import { collection, getDocs } from "firebase/firestore";
 import Navbar from "./Navbar";
-import Notes, { Button } from "./Notes";
+import Notes from "./Notes";
 export default async function Home() {
+  const collectionRef = collection(db, "notes");
+  let val = await getDocs(collectionRef);
+  const list = val.docs.map((doc) => {
+    return {
+      editing: doc.data().editing,
+      content: doc.data().content,
+      lastModified: doc.data().lastModified,
+      accent: doc.data().accent,
+      id: doc.id,
+    }
+  });
+
   return (
     <main className="main   bg-white dark:bg-nBlack  py-7 ">
       <nav className=" h-full  text-nBlack dark:text-white  px-3 sm:px-7 border-r-2 border-r-slate-200">
@@ -37,7 +50,7 @@ export default async function Home() {
           />
         </form>
         <h1 className="font-bold text-7xl my-12 text-white">Notes</h1>
-        <Notes />
+        <Notes initialData={list} />
       </main>
       {/* <Button /> */}
     </main>
