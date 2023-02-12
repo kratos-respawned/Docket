@@ -1,8 +1,8 @@
-import { db } from "@/firebase/configs";
-import { collection, getDocs } from "firebase/firestore";
+
 import Navbar from "./Navbar";
-import Notes, { Button } from "./Notes";
+import Notes from "./Notes";
 export default async function Home() {
+
   return (
     <main className="main   bg-white dark:bg-nBlack  py-7 ">
       <nav className=" h-full  text-nBlack dark:text-white  px-3 sm:px-7 border-r-2 border-r-slate-200">
@@ -39,7 +39,6 @@ export default async function Home() {
         <h1 className="font-bold text-7xl my-12 text-white">Notes</h1>
         <Notes />
       </main>
-      {/* <Button /> */}
     </main>
   );
 }
