@@ -6,8 +6,9 @@ import {
     doc,
     updateDoc,
 } from "firebase/firestore";
+import { m } from "framer-motion";
 import { Note as TypeNote } from "@/typings/note";
-import useSWR, { KeyedMutator } from 'swr';
+import { KeyedMutator } from 'swr';
 import { db } from "@/firebase/configs";
 export default function Note(props: {
     editing: boolean;
@@ -54,7 +55,10 @@ export default function Note(props: {
         });
     };
     return (
-        <form
+        <m.form
+            initial={{ opacity: 0, scale: 0, y: 40 }}
+            animate={{ opacity: 1, scale: 1, y: 0, transition: { duration: 0.3 } }}
+            exit={{ opacity: 0, scale: 0, y: -40, transition: { duration: 0.3 } }}
             key={props.id}
             onSubmit={(e) => {
                 e.preventDefault();
@@ -105,6 +109,6 @@ export default function Note(props: {
                     </button>
                 )}
             </div>
-        </form>
+        </m.form>
     );
 }
