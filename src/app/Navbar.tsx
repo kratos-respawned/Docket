@@ -1,12 +1,8 @@
 "use client";
 import { useState } from "react";
-import { addDoc, collection } from "firebase/firestore";
 import { MdAdd, MdClose } from "react-icons/md";
-import useSWR from "swr";
 function Navbar() {
-  const collectionRef = collection(db, "notes");
   const [visible, setVisibility] = useState(false);
-  const { mutate } = useSWR("getData", fetcher);
   return (
     <div className="sticky flex flex-col text-white gap-y-3 py-3 items-center  top-28 ">
       <button
