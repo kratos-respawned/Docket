@@ -1,8 +1,10 @@
 "use client";
+import useNoteStore from "@/store/noteStore";
 import { useState } from "react";
 import { MdAdd, MdClose } from "react-icons/md";
 function Navbar() {
   const [visible, setVisibility] = useState(false);
+  const addNote = useNoteStore((state) => state.addNote);
   return (
     <div className="sticky flex flex-col text-white gap-y-3 py-3 items-center  top-28 ">
       <button
@@ -21,18 +23,12 @@ function Navbar() {
                 key={index}
                 onClick={async () => {
                   let newNote = {
-                    editing: false,
+                    editing: true,
                     accent: props.accent,
                     content: ``,
                     lastModified: new Date().toDateString(),
                   };
-                  addDoc(collectionRef, newNote).then((docRef) => {
-                    mutate((data: any) => {
-                      return [
-                        ...data,
-                        { ...newNote, id: docRef.id, editing: true }]
-                    });
-                  });
+                  addNote(newNote);
                 }}
                 className={`button ${props.accent}`}
               />

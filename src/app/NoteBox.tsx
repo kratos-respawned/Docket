@@ -3,14 +3,16 @@ import { useEffect, useRef, useState } from "react";
 import { MdDelete, MdEdit, MdOutlineSave } from "react-icons/md";
 import { m } from "framer-motion";
 import { Note } from "@/typings/note";
+import useNoteStore from "@/store/noteStore";
 export default function NoteBox(props: {
     editing: boolean;
     content: string;
     lastModified: string;
     accent: string;
-    id: string;
-    // del: KeyedMutator<TypeNote[] | undefined>
+    id?: string | number;
 }) {
+    const DeleteNote = useNoteStore((state) => state.deleteNote);
+    const UpdateNote = useNoteStore((state) => state.modifyNote);
     const [data, setData] = useState({
         editing: props.editing,
         content: props.content,
@@ -23,30 +25,7 @@ export default function NoteBox(props: {
     useEffect(() => {
         if (data.editing) text.current?.focus();
     }, [data.editing]);
-    const Delete = (id: string) => {
-        const currentNote = data;
-        setData({ ...data, editing: false });
-        const noteDoc = doc(db, "notes", id);
-        deleteDoc(noteDoc).then(() => {
-            props.del((data: any) => {
-                return data.filter((note: any) => note.id !== id);
-            });
-        });
 
-    };
-    const Update = (id: string) => {
-        const currentNote = data;
-        if (!text.current) return;
-        setData({ ...data, editing: false });
-        const noteDoc = doc(db, "notes", id);
-        updateDoc(noteDoc, {
-            editing: false,
-            content: text.current?.value,
-            lastModified: new Date().toDateString(),
-        }).catch(() => {
-            setData({ ...currentNote, editing: false });
-        });
-    };
     return (
         <m.form
             initial={{ opacity: 0, scale: 0, y: 40 }}
@@ -76,7 +55,8 @@ export default function NoteBox(props: {
                     <div className="flex gap-2">
                         <button
                             onClick={() => {
-                                Delete(data.id);
+                                if (!data.id) return;
+                                DeleteNote(data.id as string);
                             }}
                             className="edit warn  "
                         >
@@ -84,7 +64,10 @@ export default function NoteBox(props: {
                         </button>
                         <button
                             onClick={() => {
-                                Update(data.id);
+                                if (!data.id) return;
+                                if (data.content.length === 0) DeleteNote(data.id as string);
+
+                                UpdateNote(props.id as string, { ...data, editing: false })
                             }}
                             className="edit "
                         >

@@ -14,8 +14,8 @@ export default function Notes() {
             list.length === 0 ? <p className="text-nBlack dark:text-white text-4xl">
               No notes found. <p className="text-xl mt-4"> Click on the + button to add a new note.</p>
             </p> :
-              (list).map((note: Note) => {
-                return <NoteBox key={note.id} {...note} />;
+              (list).map((note: Note, index) => {
+                return <NoteBox key={index} id={index} {...note} />;
               })
 
 

@@ -1,7 +1,7 @@
 export interface Note {
-  id: string;
+  id?: string;
   content: string;
-  accent: "gold" | "orange" | "purple" | "blue" | "lime";
+  accent: string;
   editing: boolean;
   lastModified: string;
 }
