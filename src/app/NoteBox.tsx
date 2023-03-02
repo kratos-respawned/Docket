@@ -1,22 +1,15 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { MdDelete, MdEdit, MdOutlineSave } from "react-icons/md";
-import {
-    deleteDoc,
-    doc,
-    updateDoc,
-} from "firebase/firestore";
 import { m } from "framer-motion";
-import { Note as TypeNote } from "@/typings/note";
-import { KeyedMutator } from 'swr';
-import { db } from "@/firebase/configs";
-export default function Note(props: {
+import { Note } from "@/typings/note";
+export default function NoteBox(props: {
     editing: boolean;
     content: string;
     lastModified: string;
     accent: string;
     id: string;
-    del: KeyedMutator<TypeNote[] | undefined>
+    // del: KeyedMutator<TypeNote[] | undefined>
 }) {
     const [data, setData] = useState({
         editing: props.editing,

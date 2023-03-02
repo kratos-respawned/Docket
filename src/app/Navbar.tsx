@@ -1,10 +1,8 @@
 "use client";
 import { useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
-import { db } from "@/firebase/configs";
 import { MdAdd, MdClose } from "react-icons/md";
 import useSWR from "swr";
-import fetcher from "@/utils/fetcher";
 function Navbar() {
   const collectionRef = collection(db, "notes");
   const [visible, setVisibility] = useState(false);
