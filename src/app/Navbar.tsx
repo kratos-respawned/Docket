@@ -1,14 +1,10 @@
 "use client";
+import useNoteStore from "@/store/noteStore";
 import { useState } from "react";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "@/firebase/configs";
 import { MdAdd, MdClose } from "react-icons/md";
-import useSWR from "swr";
-import fetcher from "@/utils/fetcher";
 function Navbar() {
-  const collectionRef = collection(db, "notes");
   const [visible, setVisibility] = useState(false);
-  const { mutate } = useSWR("getData", fetcher);
+  const addNote = useNoteStore((state) => state.addNote);
   return (
     <div className="sticky flex flex-col text-white gap-y-3 py-3 items-center  top-28 ">
       <button
@@ -27,18 +23,12 @@ function Navbar() {
                 key={index}
                 onClick={async () => {
                   let newNote = {
-                    editing: false,
+                    editing: true,
                     accent: props.accent,
                     content: ``,
                     lastModified: new Date().toDateString(),
                   };
-                  addDoc(collectionRef, newNote).then((docRef) => {
-                    mutate((data: any) => {
-                      return [
-                        ...data,
-                        { ...newNote, id: docRef.id, editing: true }]
-                    });
-                  });
+                  addNote(newNote);
                 }}
                 className={`button ${props.accent}`}
               />

@@ -1,10 +1,23 @@
 
 import Navbar from "./Navbar";
+import type { Metadata } from "next";
+import supabase from "@/lib/supabaseClient";
+import { Note } from "@/typings/note";
+import useNoteStore from "@/store/noteStore";
+import StoreInitializer from "@/store/StoreInitializer";
 import Notes from "./Notes";
-export default async function Home() {
+export const metadata: Metadata = {
+  title: "Docket",
+  description: "A simple note taking app",
+  keywords: "notes, note taking, note taking app, docket",
+};
 
+export default async function Home() {
+  const { data, error } = await supabase.from("notes").select("*") as unknown as { data: Note[], error: any };
+  useNoteStore.setState({ notes: data })
   return (
     <main className="main   bg-white dark:bg-nBlack  py-7 ">
+      <StoreInitializer data={data} />
       <nav className=" h-full  text-nBlack dark:text-white  px-3 sm:px-7 border-r-2 border-r-slate-200">
         <h1 className="sticky top-4 py-2 font-bold text-xl">Docket</h1>
         <Navbar />
@@ -37,6 +50,7 @@ export default async function Home() {
           />
         </form>
         <h1 className="font-bold text-7xl my-12 text-white">Notes</h1>
+
         <Notes />
       </main>
     </main>
