@@ -1,11 +1,8 @@
+import Aside from "@/components/Aside";
+import { Input } from "@/components/ui/Input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
-import Navbar from "./Navbar";
 import type { Metadata } from "next";
-import supabase from "@/lib/supabaseClient";
-import { Note } from "@/typings/note";
-import useNoteStore from "@/store/noteStore";
-import StoreInitializer from "@/store/StoreInitializer";
-import Notes from "./Notes";
 export const metadata: Metadata = {
   title: "Docket",
   description: "A simple note taking app",
@@ -13,46 +10,17 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const { data, error } = await supabase.from("notes").select("*") as unknown as { data: Note[], error: any };
-  useNoteStore.setState({ notes: data })
-  return (
-    <main className="main   bg-white dark:bg-nBlack  py-7 ">
-      <StoreInitializer data={data} />
-      <nav className=" h-full  text-nBlack dark:text-white  px-3 sm:px-7 border-r-2 border-r-slate-200">
-        <h1 className="sticky top-4 py-2 font-bold text-xl">Docket</h1>
-        <Navbar />
-      </nav>
-      <main className="text-nBlack w-11/12 mx-auto">
-        <form action="" className="relative mb-12 dark:bg-nBlack">
-          <label
-            htmlFor="Search"
-            className="absolute top-1/2 -translate-y-1/2 left-1 text-nBlack   pointer-events-none"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#a1a7b6"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-          </label>
-          <input
-            name="Search"
-            placeholder="Search"
-            className=" text-xl focus:outline-none focus:border-none    dark:bg-nBlack  text-nBlack dark:text-white placeholder:text-gray-400 pl-8 py-2"
-          />
-        </form>
-        <h1 className="font-bold text-7xl my-12 text-white">Notes</h1>
 
-        <Notes />
-      </main>
-    </main>
-  );
+  return (
+    <>
+      <Aside />
+
+      <ScrollArea className=" w-full  h-screen py-5 ">
+        <div className="relative my-3 w-2/5 ml-5 " >
+          <Input placeholder="Search" className="w-full placeholder:font-montserrat text-xl font-montserrat placeholder:text-xl  outline-none border-none  focus:border-none" />
+        </div>
+      </ScrollArea>
+
+    </>);
 }
+
