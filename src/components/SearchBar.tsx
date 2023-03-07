@@ -1,6 +1,6 @@
 "use client"
 
-import { SearchIcon } from "lucide-react"
+import { Search } from "lucide-react"
 import { Input } from "@/components/ui/Input"
 import { useRef } from "react"
 
@@ -10,7 +10,7 @@ function SearchBar() {
     const search = useRef(initialValue);
     return (
         <div className="relative my-3 w-2/5  " >
-            <SearchIcon onClick={() => {
+            <Search onClick={() => {
                 if (search.current)
                     search.current.focus()
             }} className="absolute cursor-pointer left-0 top-1/2 -translate-y-1/2" />
