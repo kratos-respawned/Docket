@@ -9,7 +9,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head />
-      <body className="">{children}</body>
+      <body className="divider">{children}</body>
     </html>
   );
 }

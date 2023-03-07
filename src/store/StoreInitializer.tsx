@@ -1,6 +1,6 @@
 "use client";
 
-import Notes from "@/app/Notes";
+// import Notes from "@/app/Notes";
 import { Note } from "@/typings/note";
 import { useRef } from "react";
 import useNoteStore from "./noteStore";
