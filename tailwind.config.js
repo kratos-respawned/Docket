@@ -3,11 +3,16 @@ const { fontFamily } = require("tailwindcss/defaultTheme");
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class", '[data-theme="dark"]'],
-  content: ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}"],
+  content: ["src/**/*.{ts,tsx}", "components/**/*.{ts,tsx}"],
   theme: {
     extend: {
+      colors: {
+        nblack: "#0b0e14",
+      },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
+        yeserva: ["var(--font-yeserva)", ...fontFamily.mono],
+        montserrat: ["var(--font-montserrat)", ...fontFamily.mono],
       },
       keyframes: {
         "accordion-down": {
