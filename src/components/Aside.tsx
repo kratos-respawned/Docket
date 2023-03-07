@@ -6,7 +6,7 @@ function Aside() {
     return (
         <aside className="border-r-2 border-white  my-5 ">
             <nav className=" ">
-                <h1 className="text-xl text-center font-montserrat font-semibold px-3 my-4">DOCKET</h1>
+                <h1 className="text-xl  text-center font-montserrat font-extrabold px-3 my-4">DOCKET</h1>
                 <button onClick={() => { setActive(!active) }} className="w-12 mx-auto mt-12 mb-7 aspect-square rounded-full bg-white grid place-items-center ">
                     <Plus className="text-nblack" />
                 </button>

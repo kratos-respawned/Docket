@@ -1,5 +1,7 @@
+
 import Aside from "@/components/Aside";
-import { Input } from "@/components/ui/Input";
+import SearchBar from "@/components/SearchBar";
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 import type { Metadata } from "next";
@@ -15,10 +17,12 @@ export default async function Home() {
     <>
       <Aside />
 
-      <ScrollArea className=" w-full  h-screen py-5 ">
-        <div className="relative my-3 w-2/5 ml-5 " >
-          <Input placeholder="Search" className="w-full placeholder:font-montserrat text-xl font-montserrat placeholder:text-xl  outline-none border-none  focus:border-none" />
-        </div>
+      <ScrollArea className=" w-full pl-5  h-screen py-5 ">
+        <SearchBar />
+        <h2 className="font-yeserva pl-1 text-6xl mt-7">NOTES</h2>
+        <section className="h-full w-full grid grid-cols-4 ">
+
+        </section>
       </ScrollArea>
 
     </>);
