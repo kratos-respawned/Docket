@@ -54,7 +54,7 @@
     --button:rgb(182, 81, 81);
   }
   .edit{
-    @apply text-white text-xl grid place-content-center w-12 aspect-square rounded-full hover:scale-110 transition-transform;
+    @apply  grid place-content-center w-12  aspect-square rounded-full hover:scale-110 transition-transform;
     background-color: var(--button);
   }
   .divider{
