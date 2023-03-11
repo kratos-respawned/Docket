@@ -1,5 +1,5 @@
 export interface Note {
-  id?: string;
+  id: string;
   content: string;
   accent: string;
   editing: boolean;
