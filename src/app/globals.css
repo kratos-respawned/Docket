@@ -56,6 +56,7 @@
   .edit{
     @apply  grid place-content-center w-12  aspect-square rounded-full hover:scale-110 transition-transform;
     background-color: var(--button);
+    color: var(--accent)
   }
   .divider{
     @apply grid w-screen h-screen;

@@ -26,7 +26,7 @@ export default async function Home() {
         <h2 className="font-yeserva pl-1 text-6xl mt-7">NOTES</h2>
         <section className="h-full w-full flex flex-wrap gap-6 mt-10 ">
           {notes?.map((note) => (
-            <Notes key={note.id} {...note} />
+            <Notes key={note.id} content={note.content} accent={note.accent} editing={note.editing} />
           ))}
         </section>
       </ScrollArea>
