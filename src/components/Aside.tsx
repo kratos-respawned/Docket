@@ -1,8 +1,10 @@
 "use client"
 import { Plus } from "lucide-react"
 import { useState } from "react"
+import supabase from "@/lib/supabaseClient";
 function Aside() {
     const [active, setActive] = useState(false);
+
     return (
         <aside className="border-r-2 border-white  my-5 ">
             <nav className=" ">
@@ -14,7 +16,15 @@ function Aside() {
                     active ? <ul className="flex flex-col gap-y-4 ">
                         {buttonProps.map((props, index) => {
                             return <li key={index}>
-                                <button className={`button block mx-auto ${props.accent} `}></button>
+                                <button
+                                    onClick={() => {
+                                        supabase.from('notes').insert([
+                                            { content: "New note", accent: props.accent, editing: false }
+                                        ]).then((data) => {
+                                            console.log(data)
+                                        })
+                                    }}
+                                    className={`button block mx-auto ${props.accent} `}></button>
                             </li>
                         })}
                     </ul> : null
