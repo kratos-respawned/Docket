@@ -2,9 +2,10 @@
 import { Plus } from "lucide-react"
 import { useState } from "react"
 import supabase from "@/lib/supabaseClient";
+import useNoteStore from "@/store/noteStore";
 function Aside() {
     const [active, setActive] = useState(false);
-
+    const addNote = useNoteStore(state => state.addNote);
     return (
         <aside className="border-r-2 border-white  my-5 ">
             <nav className=" ">
@@ -22,6 +23,13 @@ function Aside() {
                                             { content: "New note", accent: props.accent, editing: false }
                                         ]).then((data) => {
                                             console.log(data)
+                                            addNote({
+                                                id: Math.random(),
+                                                content: "New note",
+                                                accent: props.accent,
+                                                editing: false,
+                                                lastModified: new Date().toISOString()
+                                            })
                                         })
                                     }}
                                     className={`button block mx-auto ${props.accent} `}></button>

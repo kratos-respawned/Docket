@@ -1,11 +1,12 @@
 
 import Aside from "@/components/Aside";
 import SearchBar from "@/components/SearchBar";
-import { Edit } from "lucide-react"
 import { ScrollArea } from "@/components/ui/scroll-area";
 import supabase from "@/lib/supabaseClient"
 import type { Metadata } from "next";
-import Notes from "@/components/Notes";
+import useNoteStore from "@/store/noteStore";
+import { Note } from "@/typings/note";
+import NotesSection from "@/components/NotesSection";
 
 export const metadata: Metadata = {
   title: "Docket",
@@ -14,21 +15,16 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-
-  let { data: notes, error } = await supabase.from('notes').select('*')
-  console.log(notes)
+  let { data, error }: { data: Note[], error: any } = await supabase.from('notes').select('*') as any;
+  if (error) return <h1>error</h1>
+  useNoteStore.setState({ notes: data });
   return (
     <>
       <Aside />
-
       <ScrollArea className=" w-full pl-10  h-screen py-5 ">
         <SearchBar />
         <h2 className="font-yeserva pl-1 text-6xl mt-7">NOTES</h2>
-        <section className="h-full w-full flex flex-wrap gap-6 mt-10 ">
-          {notes?.map((note) => (
-            <Notes key={note.id} content={note.content} accent={note.accent} editing={note.editing} />
-          ))}
-        </section>
+        <NotesSection notes={data} />
       </ScrollArea>
 
     </>);
