@@ -3,5 +3,5 @@ export interface Note {
   content: string;
   accent: string;
   editing: boolean;
-  lastModified: string;
+  timestamp: number;
 }
