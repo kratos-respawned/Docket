@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { redis } from "@/lib/redis";
 import { Note } from "@/typings/note";
+import { RedisKey } from "ioredis";
 
 export async function POST(request: Request) {
   const req = await request.json();
@@ -10,12 +11,13 @@ export async function POST(request: Request) {
   const noteData: Note = {
     id: id,
     accent: data,
-    content: "Enter your text here",
+    content: "",
     editing: false,
     timestamp: new Date().getTime(),
   };
   try {
-    const resp = await redis.hset("notes", id, JSON.stringify(noteData));
+    const ID = id as unknown as RedisKey;
+    const resp = await redis.set(ID, JSON.stringify(noteData));
     return NextResponse.json({ message: resp });
   } catch (e) {
     return NextResponse.json({ message: "error occured" });

@@ -1,6 +1,8 @@
 "use client";
+import fetchNotes from "@/lib/fetchNotes";
 import { Edit2, Save, Trash } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import useSWR from "swr";
 
 function Note({
   accent,
@@ -13,13 +15,35 @@ function Note({
   content: string;
   editing: boolean;
 }) {
+  const { data, mutate } = useSWR("/api/getNotes", fetchNotes, {
+    revalidateOnFocus: false,
+  });
   const [edit, setEdit] = useState(editing);
   const [noteContent, setContent] = useState(content);
   const text = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {
     if (edit) text.current?.focus();
   }, [edit]);
-
+  const modify = async (id: number, content: string) => {
+    const data = { id: id, content: content, accent: accent };
+    const res = await fetch("/api/mutateNote", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+  };
+  const remove = async (id: number) => {
+    const res = await fetch("/api/deleteNote", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: id }),
+    });
+    mutate(data);
+  };
   return (
     <form className={`font-montserrat ${accent} note relative`}>
       <textarea
@@ -45,7 +69,11 @@ function Note({
           <Edit2 />
         </button>
         <button
-          onClick={async (e) => {}}
+          type="button"
+          onClick={async (e) => {
+            setEdit(!edit);
+            await modify(id, noteContent);
+          }}
           className={`edit w-fit  bg-transparent  border-none outline-none focus:outline-none focus:border-none ${
             edit ? "grid " : " hidden"
           } `}
@@ -53,8 +81,10 @@ function Note({
           <Save />
         </button>
         <button
-          onClick={(e) => {
-            // deleteNote(e);
+          type="button"
+          onClick={async (e) => {
+            await remove(id);
+            setEdit(!edit);
           }}
           className={`edit w-fit  bg-transparent  border-none outline-none focus:outline-none focus:border-none ${
             edit ? "grid " : " hidden"

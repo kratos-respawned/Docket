@@ -1,8 +1,23 @@
 "use client";
+import fetchNotes from "@/lib/fetchNotes";
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import useSWR from "swr";
 function Aside() {
   const [active, setActive] = useState(false);
+  const { data, mutate } = useSWR("/api/getNotes", fetchNotes, {
+    revalidateOnFocus: false,
+  });
+  const createNote = async (accent: string) => {
+    await fetch("/api/addNote", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ accent: accent }),
+    });
+    mutate(data);
+  };
   return (
     <aside className="border-r-2 border-white  my-5 ">
       <nav className=" ">
@@ -24,15 +39,7 @@ function Aside() {
                 <li key={index}>
                   <button
                     onClick={async () => {
-                      setActive(false);
-                      const res = await fetch("/api/addNote", {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ accent: props.accent }),
-                      });
-                      console.log(res);
+                      await createNote(props.accent);
                     }}
                     className={`button block mx-auto ${props.accent} `}
                   ></button>

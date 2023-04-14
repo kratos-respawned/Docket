@@ -5,7 +5,6 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-
 .blue {
   --accent: #55cffa;
   --text: #275f72;
@@ -38,11 +37,11 @@
     background-color: var(--accent);
   }
   .note {
-    @apply overflow-clip text-base sm:text-xl w-60 sm:w-72 aspect-square  rounded-3xl p-4 relative;
+    @apply overflow-clip text-base sm:text-xl w-60 sm:w-72 sm:h-72 aspect-square  rounded-3xl p-4 relative;
     background-color: var(--accent);
     color: var(--text);
   }
-  
+
   .note > textarea::placeholder {
     color: var(--text);
   }
@@ -50,15 +49,15 @@
     @apply shadow-lg;
     /* background-color: red; */
   }
-  .note .warn{
-    --button:rgb(182, 81, 81);
+  .note .warn {
+    --button: rgb(182, 81, 81);
   }
-  .edit{
-    @apply   place-content-center w-12  aspect-square rounded-full hover:scale-110 transition-transform;
+  .edit {
+    @apply place-content-center w-12  aspect-square rounded-full hover:scale-110 transition-transform;
     background-color: var(--button);
-    color: var(--accent)
+    color: var(--accent);
   }
-  .divider{
+  .divider {
     @apply grid w-screen h-screen;
     grid-template-columns: auto 1fr;
   }
