@@ -9,7 +9,6 @@ function Aside() {
   const { data: notes, mutate } = useSWR("/api/getNotes", fetchNotes, {
     revalidateOnFocus: false,
   });
-  console.log(notes);
   const createNote = async (accent: string) => {
     const id = new Date().getTime();
     await fetch("/api/addNote", {
@@ -26,19 +25,17 @@ function Aside() {
       editing: true,
       timestamp: new Date().getTime(),
     };
-    if (!notes.notes) {
-      mutate({ notes: [note] });
+
+    if (!notes || notes.length === 0) {
+      mutate(notes, {
+        optimisticData: [note],
+        rollbackOnError: true,
+      });
     } else {
-      if (notes.notes.length === 0) {
-        mutate({ notes: [note] });
-      } else {
-        await mutate(notes, {
-          optimisticData: {
-            notes: [note, ...notes.notes],
-          },
-          rollbackOnError: true,
-        });
-      }
+      await mutate(notes, {
+        optimisticData: [note, ...notes],
+        rollbackOnError: true,
+      });
     }
   };
   return (

@@ -46,10 +46,9 @@ function Note({
       body: JSON.stringify({ id: id }),
     });
     setLoading(false);
+    if (!data) return;
     mutate(data, {
-      optimisticData: {
-        notes: data.notes.filter((note: Note) => note.id !== id),
-      },
+      optimisticData: data.filter((note: Note) => note.id !== id),
       rollbackOnError: true,
     });
   };
