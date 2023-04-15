@@ -1,5 +1,6 @@
 "use client";
 import fetchNotes from "@/lib/fetchNotes";
+import type { Note } from "@/typings/note";
 import { Edit2, Save, Trash } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
@@ -18,6 +19,7 @@ function Note({
   const { data, mutate } = useSWR("/api/getNotes", fetchNotes, {
     revalidateOnFocus: false,
   });
+  const [loading, setLoading] = useState(false);
   const [edit, setEdit] = useState(editing);
   const [noteContent, setContent] = useState(content);
   const text = useRef<HTMLTextAreaElement>(null);
@@ -35,6 +37,7 @@ function Note({
     });
   };
   const remove = async (id: number) => {
+    setLoading(true);
     const res = await fetch("/api/deleteNote", {
       method: "POST",
       headers: {
@@ -42,14 +45,20 @@ function Note({
       },
       body: JSON.stringify({ id: id }),
     });
-    mutate(data);
+    setLoading(false);
+    mutate(data, {
+      optimisticData: {
+        notes: data.notes.filter((note: Note) => note.id !== id),
+      },
+      rollbackOnError: true,
+    });
   };
   return (
     <form className={`font-montserrat ${accent} note relative`}>
       <textarea
         ref={text}
         placeholder="Type something..."
-        value={noteContent}
+        value={loading ? "Deleting..." : noteContent}
         onChange={(e) => {
           setContent(e.target.value);
         }}

@@ -1,22 +1,45 @@
 "use client";
 import fetchNotes from "@/lib/fetchNotes";
+import { Note } from "@/typings/note";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import useSWR from "swr";
 function Aside() {
   const [active, setActive] = useState(false);
-  const { data, mutate } = useSWR("/api/getNotes", fetchNotes, {
+  const { data: notes, mutate } = useSWR("/api/getNotes", fetchNotes, {
     revalidateOnFocus: false,
   });
+  console.log(notes);
   const createNote = async (accent: string) => {
+    const id = new Date().getTime();
     await fetch("/api/addNote", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ accent: accent }),
+      body: JSON.stringify({ accent: accent, id: id }),
     });
-    mutate(data);
+    const note: Note = {
+      id: id,
+      content: "",
+      accent: accent,
+      editing: true,
+      timestamp: new Date().getTime(),
+    };
+    if (!notes.notes) {
+      mutate({ notes: [note] });
+    } else {
+      if (notes.notes.length === 0) {
+        mutate({ notes: [note] });
+      } else {
+        await mutate(notes, {
+          optimisticData: {
+            notes: [note, ...notes.notes],
+          },
+          rollbackOnError: true,
+        });
+      }
+    }
   };
   return (
     <aside className="border-r-2 border-white  my-5 ">

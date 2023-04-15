@@ -7,7 +7,7 @@ export async function POST(request: Request) {
   const req = await request.json();
   if (!req.accent) return NextResponse.json({ message: "No accent" });
   const data = req.accent as string;
-  const id = new Date().getTime();
+  const id = req.id;
   const noteData: Note = {
     id: id,
     accent: data,

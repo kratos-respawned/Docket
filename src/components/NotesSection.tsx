@@ -19,7 +19,7 @@ function NotesSection() {
     notes = data.notes;
   }
   return (
-    <section className="h-full w-full flex flex-wrap gap-6 mt-10 ">
+    <section className=" w-full flex flex-wrap gap-6 mt-10 ">
       {notes.length === 0 ? (
         <h1 className="mt-10 text-2xl font-montserrat">No notes found</h1>
       ) : (
