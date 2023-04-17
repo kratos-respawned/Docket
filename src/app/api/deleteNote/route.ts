@@ -6,8 +6,8 @@ export async function POST(req: Request) {
   const id = data.id;
   try {
     const resp = await redis.del(id);
-    return NextResponse.json({ message: "success" });
+    return NextResponse.json("success");
   } catch (e) {
-    return NextResponse.json({ message: "error occured" });
+    throw new Error("error occured");
   }
 }

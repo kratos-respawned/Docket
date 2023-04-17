@@ -5,7 +5,7 @@ import { RedisKey } from "ioredis";
 
 export async function POST(request: Request) {
   const req = await request.json();
-  if (!req.accent) return NextResponse.json({ message: "No accent" });
+  if (!req.accent) return NextResponse.json("No accent");
   const data = req.accent as string;
   const id = req.id;
   const noteData: Note = {
@@ -18,8 +18,8 @@ export async function POST(request: Request) {
   try {
     const ID = id as unknown as RedisKey;
     const resp = await redis.set(ID, JSON.stringify(noteData));
-    return NextResponse.json({ message: resp });
+    return NextResponse.json(noteData);
   } catch (e) {
-    return NextResponse.json({ message: "error occured" });
+    throw new Error("Error adding note");
   }
 }

@@ -4,13 +4,11 @@ import Note from "./Note";
 import useSWR from "swr";
 import fetchNotes from "@/lib/fetchNotes";
 function NotesSection() {
-  const {
-    data: notes,
-    isLoading,
-    isValidating,
-  } = useSWR("/api/getNotes", fetchNotes, {
+  const { data: notes, isLoading } = useSWR("/api/getNotes", fetchNotes, {
     revalidateOnFocus: false,
   });
+  if (isLoading)
+    return <h1 className="mt-10 text-2xl font-montserrat">Loading...</h1>;
   return (
     <section className=" w-full flex flex-wrap gap-6 mt-10 ">
       {!notes || notes.length === 0 ? (

@@ -1,4 +1,5 @@
 "use client";
+import { addNote, addNoteOptions } from "@/helpers/addNote";
 import fetchNotes from "@/lib/fetchNotes";
 import { Note } from "@/typings/note";
 import { Plus } from "lucide-react";
@@ -9,35 +10,7 @@ function Aside() {
   const { data: notes, mutate } = useSWR("/api/getNotes", fetchNotes, {
     revalidateOnFocus: false,
   });
-  const createNote = async (accent: string) => {
-    const id = new Date().getTime();
-    await fetch("/api/addNote", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ accent: accent, id: id }),
-    });
-    const note: Note = {
-      id: id,
-      content: "",
-      accent: accent,
-      editing: true,
-      timestamp: new Date().getTime(),
-    };
 
-    if (!notes || notes.length === 0) {
-      mutate(notes, {
-        optimisticData: [note],
-        rollbackOnError: true,
-      });
-    } else {
-      await mutate(notes, {
-        optimisticData: [note, ...notes],
-        rollbackOnError: true,
-      });
-    }
-  };
   return (
     <aside className="border-r-2 border-white  my-5 ">
       <nav className=" ">
@@ -59,7 +32,11 @@ function Aside() {
                 <li key={index}>
                   <button
                     onClick={async () => {
-                      await createNote(props.accent);
+                      const ID = new Date().getTime();
+                      await mutate(
+                        addNote(props.accent, ID, notes),
+                        addNoteOptions(props.accent, ID, notes)
+                      );
                     }}
                     className={`button block mx-auto ${props.accent} `}
                   ></button>

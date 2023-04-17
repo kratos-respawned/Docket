@@ -2,7 +2,6 @@ import { redis } from "@/lib/redis";
 import { Note } from "@/typings/note";
 import { RedisKey } from "ioredis";
 import { NextResponse } from "next/server";
-
 export async function POST(request: Request) {
   const req = await request.json();
   const data: Note = {
@@ -10,14 +9,14 @@ export async function POST(request: Request) {
     content: req.content,
     accent: req.accent,
     editing: false,
-    timestamp: new Date().getTime(),
+    timestamp: req.timestamp,
   };
 
   try {
     const ID = data.id as unknown as RedisKey;
-    const resp = await redis.set(ID, JSON.stringify(data));
-    return NextResponse.json({ message: "Success" });
+    await redis.set(ID, JSON.stringify(data));
+    return NextResponse.json(data);
   } catch (e) {
-    return NextResponse.json({ message: "error occured" });
+    throw new Error("Error mutating note");
   }
 }

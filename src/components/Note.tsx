@@ -1,4 +1,6 @@
 "use client";
+import { deleteNote, deleteNoteOptions } from "@/helpers/deleteNote";
+import { mutateNote, mutateNoteOptions } from "@/helpers/mutateNote";
 import fetchNotes from "@/lib/fetchNotes";
 import type { Note } from "@/typings/note";
 import { Edit2, Save, Trash } from "lucide-react";
@@ -19,45 +21,19 @@ function Note({
   const { data, mutate } = useSWR("/api/getNotes", fetchNotes, {
     revalidateOnFocus: false,
   });
-  const [loading, setLoading] = useState(false);
+
   const [edit, setEdit] = useState(editing);
   const [noteContent, setContent] = useState(content);
   const text = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {
     if (edit) text.current?.focus();
   }, [edit]);
-  const modify = async (id: number, content: string) => {
-    const data = { id: id, content: content, accent: accent };
-    const res = await fetch("/api/mutateNote", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-  };
-  const remove = async (id: number) => {
-    setLoading(true);
-    const res = await fetch("/api/deleteNote", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: id }),
-    });
-    setLoading(false);
-    if (!data) return;
-    mutate(data, {
-      optimisticData: data.filter((note: Note) => note.id !== id),
-      rollbackOnError: true,
-    });
-  };
   return (
     <form className={`font-montserrat ${accent} note relative`}>
       <textarea
         ref={text}
         placeholder="Type something..."
-        value={loading ? "Deleting..." : noteContent}
+        value={noteContent}
         onChange={(e) => {
           setContent(e.target.value);
         }}
@@ -66,8 +42,8 @@ function Note({
       />
       <div className="absolute w-full flex justify-end gap-x-4   bottom-0 right-0 px-5 pb-4 pt-2  ">
         <button
+          type="button"
           onClick={(e) => {
-            e.preventDefault();
             setEdit(!edit);
           }}
           className={`edit  ml-auto bg-transparent  border-none outline-none focus:outline-none focus:border-none ${
@@ -79,8 +55,15 @@ function Note({
         <button
           type="button"
           onClick={async (e) => {
+            const note: Note = {
+              id,
+              content: noteContent,
+              editing: false,
+              accent: accent,
+              timestamp: new Date().getTime(),
+            };
             setEdit(!edit);
-            await modify(id, noteContent);
+            await mutate(mutateNote(note, data), mutateNoteOptions(note, data));
           }}
           className={`edit w-fit  bg-transparent  border-none outline-none focus:outline-none focus:border-none ${
             edit ? "grid " : " hidden"
@@ -91,8 +74,8 @@ function Note({
         <button
           type="button"
           onClick={async (e) => {
-            await remove(id);
             setEdit(!edit);
+            await mutate(deleteNote(id, data), deleteNoteOptions(id, data));
           }}
           className={`edit w-fit  bg-transparent  border-none outline-none focus:outline-none focus:border-none ${
             edit ? "grid " : " hidden"

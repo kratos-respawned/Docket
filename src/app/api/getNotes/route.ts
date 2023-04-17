@@ -7,7 +7,7 @@ export async function GET() {
     // get all key values
     const keys = await redis.keys("*");
     const values = await redis.mget(keys);
-    if (!values) return NextResponse.json({ notes: [] });
+    if (!values) return NextResponse.json([]);
     const rawNotes: Note[] = values.map((value, index) => {
       if (!value) return;
       return {
@@ -18,8 +18,8 @@ export async function GET() {
     const notes: Note[] = rawNotes.sort(
       (a: Note, b: Note) => b.timestamp - a.timestamp
     );
-    return NextResponse.json({ notes });
+    return NextResponse.json(notes);
   } catch (e) {
-    return NextResponse.json({ message: "error occured" });
+    return NextResponse.json([]);
   }
 }
