@@ -2,8 +2,7 @@ import { redis } from "@/lib/redis";
 // import { Note } from "@/typings/note";
 import { NextResponse } from "next/server";
 export const revalidate = true;
-export async function GET(req: Request) {
-  const data = await req.json();
+export async function POST(req: Request) {
   try {
     const keys = await redis.keys("*");
     const values = await redis.mget(keys);
