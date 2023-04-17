@@ -9,7 +9,7 @@ export async function POST(request: Request) {
     content: req.content,
     accent: req.accent,
     editing: false,
-    timestamp: req.timestamp,
+    timestamp: new Date().getTime(),
   };
 
   try {

@@ -12,7 +12,7 @@ export const mutateNote = async (mutatedNote: Note, notes: Note[]) => {
       }
       return note;
     })
-    .sort((a: Note, b: Note) => a.timestamp - b.timestamp);
+    .sort((a: Note, b: Note) => b.timestamp - a.timestamp);
 };
 
 export const mutateNoteOptions = (mutatedNote: Note, notes: Note[]) => {
@@ -24,7 +24,7 @@ export const mutateNoteOptions = (mutatedNote: Note, notes: Note[]) => {
         }
         return note;
       })
-      .sort((a: Note, b: Note) => a.timestamp - b.timestamp),
+      .sort((a: Note, b: Note) => b.timestamp - a.timestamp),
     rollbackOnError: true,
     populateCache: true,
     revalidate: false,

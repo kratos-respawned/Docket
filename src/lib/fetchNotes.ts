@@ -1,7 +1,5 @@
-const fetchNotes = () =>
-  fetch("/api/getNotes").then(async (res) => {
-    const data = await res.json();
-    return data;
-  });
+import axios from "axios";
+
+const fetchNotes = () => axios.get("/api/getNotes").then((res) => res.data);
 
 export default fetchNotes;
