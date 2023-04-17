@@ -3,6 +3,7 @@ import { redis } from "@/lib/redis";
 import { NextResponse } from "next/server";
 export const revalidate = true;
 export async function GET(req: Request) {
+  const data = await req.json();
   try {
     const keys = await redis.keys("*");
     const values = await redis.mget(keys);
