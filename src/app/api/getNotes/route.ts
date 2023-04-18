@@ -3,7 +3,7 @@ import { redis } from "@/lib/redis";
 import { NextResponse } from "next/server";
 export const revalidate = true;
 export const dynamic = "force-dynamic";
-export async function POST(req: Request) {
+export async function GET(req: Request) {
   try {
     const keys = await redis.keys("*");
     const values = await redis.mget(keys);
