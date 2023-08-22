@@ -1,7 +1,7 @@
 export interface Note {
-  id: number;
+  id: string;
   content: string;
   accent: string;
   editing: boolean;
-  timestamp: number;
+  timestamp: string;
 }

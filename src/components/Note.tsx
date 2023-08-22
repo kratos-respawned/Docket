@@ -13,7 +13,7 @@ function Note({
   editing,
   id,
 }: {
-  id: number;
+  id: string;
   accent: string;
   content: string;
   editing: boolean;
@@ -60,7 +60,7 @@ function Note({
               content: noteContent,
               editing: false,
               accent: accent,
-              timestamp: new Date().getTime(),
+              timestamp: (new Date().getTime()).toString(),
             };
             setEdit(!edit);
             await mutate(mutateNote(note, data), mutateNoteOptions(note, data));
@@ -75,7 +75,7 @@ function Note({
           type="button"
           onClick={async (e) => {
             setEdit(!edit);
-            await mutate(deleteNote(id, data), deleteNoteOptions(id, data));
+            await mutate(deleteNote(Number(id), data), deleteNoteOptions(Number(id), data));
           }}
           className={`edit w-fit  bg-transparent  border-none outline-none focus:outline-none focus:border-none ${
             edit ? "grid " : " hidden"

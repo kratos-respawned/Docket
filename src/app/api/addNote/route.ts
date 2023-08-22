@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { redis } from "@/lib/redis";
 import { Note } from "@/typings/note";
-import { RedisKey } from "ioredis";
+import { db } from "@/lib/prisma";
 
 export async function POST(request: Request) {
   const req = await request.json();
@@ -13,11 +12,18 @@ export async function POST(request: Request) {
     accent: data,
     content: "",
     editing: false,
-    timestamp: new Date().getTime(),
+    timestamp: (new Date().getTime()).toString(),
   };
   try {
-    const ID = id as unknown as RedisKey;
-    const resp = await redis.set(ID, JSON.stringify(noteData));
+    await db.note.create({
+      data:{
+        accent: noteData.accent,
+        content: noteData.content,
+        editing: noteData.editing,
+        timestamp: noteData.timestamp,
+        id: noteData.id
+      }
+    })
     return NextResponse.json(noteData);
   } catch (e) {
     throw new Error("Error adding note");
