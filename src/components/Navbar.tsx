@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Button } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import { createServerClient } from "@/utils/supabase/server";
 import { ReaderIcon } from "@radix-ui/react-icons";
+import { cn } from "@/lib/utils";
 
 export const Navbar = async () => {
   const supabase = createServerClient();
@@ -10,7 +11,7 @@ export const Navbar = async () => {
     <header className=" sticky top-0 shadow  z-50 border-b border-border/40 bg-background px-8 lg:px-10 h-14 flex items-center justify-between">
       <Link href="/" className="flex items-center justify-center">
         <ReaderIcon className="h-6 w-6" />
-        <span className="sr-only">Trekking Adventures</span>
+        <span className="sr-only">Docket</span>
       </Link>
       <nav className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-sm  text-foreground  lg:flex  hidden gap-4 sm:gap-6">
         {/* <Link
@@ -46,7 +47,7 @@ export const Navbar = async () => {
       </nav>
 
       <div className="hidden lg:flex items-center gap-3">
-        {!data.user ? <Button>Sign In</Button> : <Button>Sign Out</Button>}
+        {!data.user ? <Link href={"/auth/signin"} className={cn(buttonVariants())}>Sign In</Link> : <Button>Sign Out</Button>}
       </div>
     </header>
   );
