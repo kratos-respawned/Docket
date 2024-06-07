@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import "./globals.css";
+import "./prosemirror.css";
 import type { Metadata } from "next";
 import { Yeseva_One } from "next/font/google";
 import { Montserrat } from "next/font/google";

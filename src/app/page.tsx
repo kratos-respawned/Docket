@@ -25,7 +25,7 @@ export default function Home() {
             <span>Introducing Docket 2.0</span>
             <ArrowRightIcon className="ml-1 h-4 w-4" />
           </Link>
-          <h1 className="text-center font-heading text-3xl font-bold leading-tight  mx-auto md:text-5xl lg:leading-[1.1]">
+          <h1 className="text-center animate-in font-heading text-3xl font-bold leading-tight  mx-auto md:text-5xl lg:leading-[1.1]">
             Your Personal Note Taking App
           </h1>
           <p className="max-w-[750px] text-center text-lg font-light text-foreground text-balance">
