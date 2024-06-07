@@ -1,4 +1,6 @@
+import { cn } from "@/lib/utils";
 import "./globals.css";
+import type { Metadata } from "next";
 import { Yeseva_One } from "next/font/google";
 import { Montserrat } from "next/font/google";
 const yeserva = Yeseva_One({
@@ -11,6 +13,16 @@ const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-montserrat",
 });
+const defaultUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : "http://localhost:3000";
+
+export const metadata: Metadata = {
+  title: "Docket",
+  metadataBase: new URL(defaultUrl),
+  description: "A simple note taking app",
+  keywords: "notes, note taking, note taking app, docket",
+};
 export default function RootLayout({
   children,
 }: {
@@ -18,10 +30,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <head />
-      <body
-        className={`divider overflow-clip ${yeserva.variable} ${montserrat.variable} bg-nblack text-slate-100`}
-      >
+      <body className={cn(montserrat.className, yeserva.variable,montserrat.variable)}>
         {children}
       </body>
     </html>
