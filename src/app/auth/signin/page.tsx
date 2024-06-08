@@ -18,6 +18,7 @@ export default async function AuthenticationPage() {
   const supabase = createServerClient();
   const { data, error } = await supabase.auth.getUser();
   if (data.user) {
+    console.log(data.user?.id)
     redirect("/");
   }
   return (

@@ -30,8 +30,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={cn(montserrat.className, yeserva.variable,montserrat.variable)}>
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <body
+        className={cn(
+          montserrat.className,
+          yeserva.variable,
+          montserrat.variable
+        )}
+      >
         {children}
       </body>
     </html>

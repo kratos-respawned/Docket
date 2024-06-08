@@ -1,5 +1,3 @@
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { ReaderIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 
@@ -13,10 +11,10 @@ export default function AuthLayout({
       <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
         <div className="absolute inset-0 bg-zinc-900" />
         <Link href="/" passHref>
-        <div className="relative z-20 flex gap-2 items-center text-lg font-medium">
-          <ReaderIcon className=" h-6 w-6" />
-          Docket Inc
-        </div>
+          <div className="relative z-20 flex gap-2 items-center text-lg font-medium">
+            <ReaderIcon className=" h-6 w-6" />
+            Docket Inc
+          </div>
         </Link>
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">

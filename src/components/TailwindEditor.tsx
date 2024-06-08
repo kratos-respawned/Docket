@@ -29,7 +29,7 @@ import { uploadFn } from "@/utils/image-upload";
 const extensions = [...defaultExtensions, slashCommand];
 const TailwindEditor = () => {
   const [content, setContent] = useState<JSONContent | undefined>();
-  const [saveStatus, setSaveStatus] = useState<"Saved" | "Unsaved">("Saved");
+  // const [saveStatus, setSaveStatus] = useState<"Saved" | "Unsaved">("Saved");
   const [charsCount, setCharsCount] = useState();
   const [openNode, setOpenNode] = useState(false);
   const [openLink, setOpenLink] = useState(false);
@@ -49,25 +49,26 @@ const TailwindEditor = () => {
       setCharsCount(editor.storage?.characterCount?.words());
       const json = editor.getJSON();
       setContent(json);
-      setSaveStatus("Saved");
+      // setSaveStatus("Saved");
       window.localStorage.setItem(
         "html-content",
         highlightCodeblocks(editor.getHTML())
       );
+      // console.log(editor.getHTML());
+      // console.log(JSON.stringify(json));
       window.localStorage.setItem("novel-content", JSON.stringify(json));
       window.localStorage.setItem(
         "markdown",
         editor.storage?.markdown?.getMarkdown()
       );
-      console.log(editor.storage.markdown.getMarkdown());
     },
     500
   );
   return (
     <div className="relative w-full ">
-      <div className="flex absolute right-5 top-5 z-10 mb-5 gap-2">
-        <div className="rounded-lg bg-accent px-2 py-1 text-sm text-muted-foreground">
-          {saveStatus}
+      <div className="flex absolute right-0 -top-24 z-10 mb-5 gap-2">
+        <div className="hidden rounded-lg bg-accent px-2 py-1 text-sm text-muted-foreground">
+          {/* {saveStatus} */}
         </div>
         <div
           className={
@@ -83,7 +84,7 @@ const TailwindEditor = () => {
         <EditorContent
           initialContent={content}
           extensions={extensions}
-          className="relative min-h-[500px] w-full  border-muted bg-background sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:shadow-lg"
+          className="relative  w-full min-h-[40vh]  bg-background   "
           editorProps={{
             handleDOMEvents: {
               keydown: (_view, event) => handleCommandNavigation(event),
@@ -99,7 +100,7 @@ const TailwindEditor = () => {
           }}
           onUpdate={({ editor }) => {
             debouncedUpdates(editor);
-            setSaveStatus("Unsaved");
+            // setSaveStatus("Unsaved");
           }}
           slotAfter={<ImageResizer />}
         >

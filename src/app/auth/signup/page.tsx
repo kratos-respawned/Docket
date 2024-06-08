@@ -21,6 +21,7 @@ export default async function SignUpPage() {
   if (data.user) {
     redirect("/");
   }
+  
   return (
     <div className="lg:p-8 place-self-center">
       <Link

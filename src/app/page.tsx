@@ -3,12 +3,12 @@ import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { ArrowRightIcon, Blocks, Github } from "lucide-react";
-import Image from "next/image";
+
 import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-[100dvh]">
+    <section className="flex flex-col min-h-[100dvh]">
       <Navbar />
       <main className="flex-1">
         <section
@@ -33,7 +33,7 @@ export default function Home() {
             focused.
           </p>
           <div className="flex w-full items-center justify-center space-x-4 py-4 md:pb-10">
-            <Link href="/" className={cn(buttonVariants())}>
+            <Link href="/dashboard" className={cn(buttonVariants())}>
               Get Started
             </Link>
             <Link
@@ -48,7 +48,7 @@ export default function Home() {
           </div>
         </section>
       </main>
-    </div>
+    </section>
   );
 }
 {
