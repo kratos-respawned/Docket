@@ -6,7 +6,7 @@ import Link from "next/link";
 
 import { ReaderIcon } from "@radix-ui/react-icons";
 import { SignUpForm } from "./sign-up-form";
-import { createServerClient } from "@/utils/supabase/server";
+import { createServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {

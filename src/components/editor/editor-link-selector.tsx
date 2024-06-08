@@ -2,8 +2,8 @@ import { Popover, PopoverTrigger } from "@radix-ui/react-popover";
 import { Check, Trash } from "lucide-react";
 import { useEditor } from "novel";
 import { useEffect, useRef } from "react";
-import { Button } from "./ui/button";
-import { PopoverContent } from "./ui/popover";
+import { Button } from "../ui/button";
+import { PopoverContent } from "../ui/popover";
 import { cn } from "@/lib/utils";
 
 export function isValidUrl(url: string) {

@@ -6,23 +6,42 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { Github, KeyRound, Loader } from "lucide-react";
 import * as React from "react";
-import { createClient } from "@/utils/supabase/client";
-
+import { createClient } from "@/lib/supabase/client";
+import { useForm } from "react-hook-form";
+import { signInSchema } from "@/validators/sign-in-schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function SignInForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const form = useForm<signInSchema>({
+    resolver: zodResolver(signInSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
   const supabase = createClient();
+
   const googleSignIn = async () => {
     setIsLoading(true);
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
+      // provider: "google",
+      provider: "github",
       options: {
         redirectTo: "/dashboard",
-        queryParams: {
-          access_type: "offline",
-          prompt: "consent",
-        },
+        // queryParams: {
+        //   access_type: "offline",
+        //   prompt: "consent",
+        // },
       },
     });
     setIsLoading(false);
@@ -30,59 +49,68 @@ export function SignInForm({ className, ...props }: UserAuthFormProps) {
       console.error("Error signing in with Google", error);
     }
   };
-  async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault();
+  const Login = async (formdata: signInSchema) => {
+    const { email, password } = formdata;
     setIsLoading(true);
-
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-  }
-
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    setIsLoading(false);
+    if (error) {
+      console.error("Error signing in with email and password", error);
+    }
+  };
   return (
     <div className={cn("grid gap-6", className)} {...props}>
-      <form onSubmit={onSubmit}>
-        <div className="grid gap-2">
-          <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="email">
-              Email
-            </Label>
-            <Input
-              id="email"
-              placeholder="name@example.com"
-              type="email"
-              autoCapitalize="none"
-              autoComplete="email"
-              autoCorrect="off"
-              disabled={isLoading}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(Login)}>
+          <div className="grid gap-2">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="rick@morty.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="password">
-              Password
-            </Label>
-            <Input
-              id="password"
-              placeholder="v3ryS3cr3tP@ssw0rd"
-              type="password"
-              autoCapitalize="none"
-              autoComplete="password"
-              autoCorrect="off"
-              disabled={isLoading}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="v3ryS3cr3tP@ssw0rd"
+                      type="password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
+
+            <Button disabled={isLoading}>
+              {isLoading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
+              Sign In
+            </Button>
+            <Button
+              type="button"
+              variant={"link"}
+              className="w-fit flex ml-auto text-xs px-0 h-0"
+            >
+              Forget Password
+            </Button>
           </div>
-          <Button disabled={isLoading}>
-            {isLoading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
-            Sign In with Email
-          </Button>
-          <Button
-            variant={"link"}
-            className="w-fit flex ml-auto text-xs px-0 h-0"
-          >
-            Forget Password
-          </Button>
-        </div>
-      </form>
+        </form>
+      </Form>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />

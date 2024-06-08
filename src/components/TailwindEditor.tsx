@@ -1,10 +1,10 @@
 "use client";
-import { NodeSelector } from "@/components/editor-node-selector";
-import { TextButtons } from "@/components/editor-text-buttons";
+import { NodeSelector } from "@/components/editor/editor-node-selector";
+import { TextButtons } from "@/components/editor/editor-text-buttons";
 import {
   slashCommand,
   suggestionItems,
-} from "@/utils/editor/createSuggestions";
+} from "@/components/createSuggestions";
 import {
   EditorBubble,
   EditorCommand,
@@ -18,14 +18,14 @@ import {
 } from "novel";
 import { ImageResizer, handleCommandNavigation } from "novel/extensions";
 import { useState } from "react";
-import { defaultExtensions } from "./editor-extension";
+import { defaultExtensions } from "./editor/editor-extension";
 import { useDebouncedCallback } from "use-debounce";
 import hljs from "highlight.js";
-import { LinkSelector } from "./editor-link-selector";
+import { LinkSelector } from "./editor/editor-link-selector";
 import { Separator } from "./ui/separator";
-import { ColorSelector } from "./editor-color-selector";
+import { ColorSelector } from "./editor/editor-color-selector";
 import { handleImageDrop, handleImagePaste } from "novel/plugins";
-import { uploadFn } from "@/utils/image-upload";
+import { uploadFn } from "@/lib/image-upload";
 const extensions = [...defaultExtensions, slashCommand];
 const TailwindEditor = () => {
   const [content, setContent] = useState<JSONContent | undefined>();

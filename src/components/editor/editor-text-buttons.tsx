@@ -8,7 +8,7 @@ import {
   LucideIcon,
 } from "lucide-react";
 // import type { SelectorItem } from "./node-selector";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 
 export type SelectorItem = {

@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Button, buttonVariants } from "./ui/button";
-import { createServerClient } from "@/utils/supabase/server";
+import { createServerClient } from "@/lib/supabase/server";
 import { ReaderIcon } from "@radix-ui/react-icons";
 import { cn } from "@/lib/utils";
+import { SignOutBtn } from "./signout-btn";
 
 export const Navbar = async () => {
   const supabase = createServerClient();
@@ -53,7 +54,7 @@ export const Navbar = async () => {
             Sign In
           </Link>
         ) : (
-          <Button>Sign Out</Button>
+          <SignOutBtn />
         )}
       </div>
     </header>

@@ -4,6 +4,7 @@ import "./prosemirror.css";
 import type { Metadata } from "next";
 import { Yeseva_One } from "next/font/google";
 import { Montserrat } from "next/font/google";
+import { AuthProvider } from "@/components/AuthProvider";
 const yeserva = Yeseva_One({
   weight: ["400"],
   subsets: ["latin"],
@@ -31,6 +32,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      {/* <AuthProvider> */}
       <body
         className={cn(
           montserrat.className,
@@ -40,6 +42,7 @@ export default function RootLayout({
       >
         {children}
       </body>
+      {/* </AuthProvider> */}
     </html>
   );
 }

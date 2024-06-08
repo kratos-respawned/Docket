@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SignInForm } from "../signin/sign-in-form";
 import { ReaderIcon } from "@radix-ui/react-icons";
-import { createServerClient } from "@/utils/supabase/server";
+import { createServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {

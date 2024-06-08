@@ -5,12 +5,12 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ResizableText from "react-textarea-autosize";
-import { NodeSelector } from "@/components/editor-node-selector";
-import { TextButtons } from "@/components/editor-text-buttons";
+import { NodeSelector } from "@/components/editor/editor-node-selector";
+import { TextButtons } from "@/components/editor/editor-text-buttons";
 import {
   slashCommand,
   suggestionItems,
-} from "@/utils/editor/createSuggestions";
+} from "@/components/createSuggestions";
 import {
   EditorBubble,
   EditorCommand,
@@ -28,11 +28,11 @@ import { useDebouncedCallback } from "use-debounce";
 import hljs from "highlight.js";
 
 import { handleImageDrop, handleImagePaste } from "novel/plugins";
-import { uploadFn } from "@/utils/image-upload";
-import { defaultExtensions } from "@/components/editor-extension";
+import { uploadFn } from "@/lib/image-upload";
+import { defaultExtensions } from "@/components/editor/editor-extension";
 import { Separator } from "@/components/ui/separator";
-import { LinkSelector } from "@/components/editor-link-selector";
-import { ColorSelector } from "@/components/editor-color-selector";
+import { LinkSelector } from "@/components/editor/editor-link-selector";
+import { ColorSelector } from "@/components/editor/editor-color-selector";
 const extensions = [...defaultExtensions, slashCommand];
 const highlightCodeblocks = (content: string) => {
   const doc = new DOMParser().parseFromString(content, "text/html");
