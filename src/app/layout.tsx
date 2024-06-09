@@ -4,7 +4,6 @@ import "./prosemirror.css";
 import type { Metadata } from "next";
 import { Yeseva_One } from "next/font/google";
 import { Montserrat } from "next/font/google";
-import { AuthProvider } from "@/components/AuthProvider";
 const yeserva = Yeseva_One({
   weight: ["400"],
   subsets: ["latin"],
