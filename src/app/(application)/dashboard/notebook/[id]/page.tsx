@@ -1,3 +1,4 @@
+import { EmptyNotes } from "@/components/empty-notes";
 import { NoteCard } from "@/components/note-card";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,9 +7,7 @@ import { authRedirect } from "@/lib/authredirect";
 import { createServerClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 import { PlusIcon } from "@radix-ui/react-icons";
-import { Book } from "lucide-react";
-import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
 export default async function NotebookPage({
   params,
@@ -22,17 +21,18 @@ export default async function NotebookPage({
     .select("*")
     .eq("id", params.id)
     .single();
-  if (!notebookData) notFound();
+  if (!notebookData || notebookError) notFound();
   const { data: notes, error } = await supabase
     .from("notes")
-    .select(`id,title,content`)
-    .eq("notebookId", params.id);
+    .select(`id,title,placeholder`)
+    .eq("notebookid", params.id);
+
   return (
     <section>
       {/* TODO: abstract header into a separate component with search bar as children */}
       <header className=" md:h-[60px] px-6 items-center md:border-b md:flex justify-between">
         <h1 className="block font-semibold text-xl md:text-2xl">
-          {notebookData.name}
+          {notebookData.title}
         </h1>
         <div className="flex gap-6">
           <div
@@ -56,11 +56,13 @@ export default async function NotebookPage({
             New Note
           </Button>
         </div>
-        <ScrollArea className="    md:h-[calc(100vh-9rem)]   ">
-          <div className="grid gap-4 px-5 md:p-3">
-            {notes?.map((note) => (
-              <NoteCard note={note} key={note.id} />
-            ))}
+        <ScrollArea className="  h-[calc(100vh-10rem)] relative  md:h-[calc(100vh-9rem)]   ">
+          <div className="grid gap-4 px-5 md:p-3 ">
+            {notes?.length === 0 ? (
+              <EmptyNotes notebookId={params.id} />
+            ) : (
+              notes?.map((note) => <NoteCard note={note} key={note.id} />)
+            )}
           </div>
         </ScrollArea>
       </section>

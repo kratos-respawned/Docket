@@ -5,9 +5,9 @@ export const NoteCard = ({
   note,
 }: {
   note: {
-    id: number;
+    id: string;
     title: string;
-    content: string | null;
+    placeholder: string;
   };
 }) => (
   <Link href={`/editor/${note.id}`} passHref>
@@ -19,7 +19,7 @@ export const NoteCard = ({
               {note.title}
             </h2>
             <p className="mt-1 text-sm text-gray-500 line-clamp-1 dark:text-gray-400">
-              {note.content}
+              {note.placeholder}
             </p>
           </div>
           <div className="text-sm text-gray-500 dark:text-gray-400">

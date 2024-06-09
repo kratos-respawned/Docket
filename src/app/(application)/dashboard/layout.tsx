@@ -10,7 +10,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="grid min-h-dvh md:max-h-screen md:overflow-clip md:grid-cols-[200px_1fr] lg:grid-cols-[280px_1fr]">
+    <main className="md:grid min-h-dvh md:max-h-screen md:overflow-clip md:grid-cols-[200px_1fr] lg:grid-cols-[280px_1fr]">
       <aside className="border-r ">
         <div className="flex justify-between flex-wrap py-2 md:py-0 md:h-[60px] items-center px-3 lg:px-6">
           <Button size={"icon"} variant={"secondary"} className="md:hidden">

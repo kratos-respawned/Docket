@@ -23,7 +23,7 @@ import {
   EditorCommandList,
 } from "novel";
 import { ImageResizer, handleCommandNavigation } from "novel/extensions";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import hljs from "highlight.js";
 
@@ -33,6 +33,8 @@ import { defaultExtensions } from "@/components/editor/editor-extension";
 import { Separator } from "@/components/ui/separator";
 import { LinkSelector } from "@/components/editor/editor-link-selector";
 import { ColorSelector } from "@/components/editor/editor-color-selector";
+import { Json, Tables } from "@/typings/supabase";
+import { createClient } from "@/lib/supabase/client";
 const extensions = [...defaultExtensions, slashCommand];
 const highlightCodeblocks = (content: string) => {
   const doc = new DOMParser().parseFromString(content, "text/html");
@@ -42,36 +44,44 @@ const highlightCodeblocks = (content: string) => {
   });
   return new XMLSerializer().serializeToString(doc);
 };
+
 export const Editor = ({
   note,
 }: {
-  note: { title: string; content: string | null };
+  note: { title: string; json: Json; id: string };
 }) => {
   const router = useRouter();
   const [content, setContent] = useState<JSONContent | undefined>(
-    note.content ? JSON.parse(note.content) : undefined
+    note.json as JSONContent
   );
+  const [Html, setHtml] = useState<string>("");
   const [charsCount, setCharsCount] = useState();
   const [openNode, setOpenNode] = useState(false);
   const [openLink, setOpenLink] = useState(false);
   const [openColor, setOpenColor] = useState(false);
-
+  const titleRef = useRef<HTMLTextAreaElement>(null);
+  const [saveStatus, setSaveStatus] = useState<"Saved" | "Unsaved">("Unsaved");
+  const [loading, setLoading] = useState(false);
+  const saveNote = async () => {
+    const supabase = createClient();
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("notes")
+      .update({ json: content, html: Html, title: titleRef.current?.value })
+      .eq("id", note.id)
+      .single();
+    setLoading(false);
+    if (error) {
+      console.error(error);
+    } else setSaveStatus("Saved");
+  };
   const debouncedUpdates = useDebouncedCallback(
     async (editor: EditorInstance) => {
       setCharsCount(editor.storage?.characterCount?.words());
       const json = editor.getJSON();
       setContent(json);
-      console.log(editor.getHTML());
-      // setSaveStatus("Saved");
-      // window.localStorage.setItem(
-      //   "html-content",
-      //   highlightCodeblocks(editor.getHTML())
-      // );
-      // window.localStorage.setItem("novel-content", JSON.stringify(json));
-      // window.localStorage.setItem(
-      //   "markdown",
-      //   editor.storage?.markdown?.getMarkdown()
-      // );
+      setHtml(highlightCodeblocks(editor.getHTML()));
+      setSaveStatus("Unsaved");
     },
     500
   );
@@ -79,6 +89,7 @@ export const Editor = ({
     <main className="px-10 py-8  space-y-12 container min-h-dvh">
       <div className=" sticky z-50 isolate top-8 flex w-full items-center justify-between ">
         <Button
+          disabled={loading}
           onClick={() => router.back()}
           className="pl-0 -ml-2 bg-background "
           variant={"ghost"}
@@ -86,17 +97,20 @@ export const Editor = ({
           <ChevronLeft />
           Back
         </Button>
-        <Button>Save</Button>
+        <Button disabled={loading} onClick={saveNote}>
+          {loading ? "Saving..." : "Save"}
+        </Button>
       </div>
       <div className=" mx-auto max-w-4xl">
         <ResizableText
+          ref={titleRef}
           placeholder={note.title}
           className=" w-full resize-none appearance-none overflow-hidden bg-transparent text-5xl font-bold focus:outline-none"
         />
         <div className="relative w-full ">
           <div className="flex absolute right-0 -top-24 z-10 mb-5 gap-2">
-            <div className="hidden rounded-lg bg-accent px-2 py-1 text-sm text-muted-foreground">
-              {/* {saveStatus} */}
+            <div className=" rounded-lg bg-accent px-2 py-1 text-sm text-muted-foreground">
+              {saveStatus}
             </div>
             <div
               className={

@@ -1,3 +1,4 @@
+import { EmptyNotebook } from "@/components/empty-notebook";
 import { NotebookCard } from "@/components/notebook-card";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -34,16 +35,20 @@ export default async function NotebookPage() {
       </header>
       <section className=" md:px-6 flex flex-col gap-3 pt-3 pb-4   md:pb-0 ">
         <div className="px-6 md:px-0 flex items-center justify-end md:justify-between">
-          <Button className="flex ml-auto max-sm:px-2.5 max-sm:py-2  text-xs md:text-base">
+          <Button className="flex ml-auto max-sm:px-2.5 max-sm:py-2 max-sm:text-xs ">
             <PlusIcon className=" w-4  md:w-5   aspect-square mr-2" />
             New Notebook
           </Button>
         </div>
-        <ScrollArea className=" md:border   rounded-lg   md:h-[calc(100vh-9rem)]   ">
-          <div className="grid gap-4 px-5 md:p-3">
-            {data?.map((notebook) => (
-              <NotebookCard notebook={notebook} key={notebook.id} />
-            ))}
+        <ScrollArea className=" md:border   rounded-lg relative h-[calc(100vh-10rem)]  md:h-[calc(100vh-9rem)]   ">
+          <div className="grid gap-4 px-5 md:p-3 ">
+            {data?.length === 0 ? (
+              <EmptyNotebook />
+            ) : (
+              data?.map((notebook) => (
+                <NotebookCard notebook={notebook} key={notebook.id} />
+              ))
+            )}
           </div>
         </ScrollArea>
       </section>

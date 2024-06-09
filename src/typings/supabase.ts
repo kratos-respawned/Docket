@@ -12,26 +12,26 @@ export type Database = {
       notebook: {
         Row: {
           created_at: string
-          id: number
-          name: string
-          userId: string
+          id: string
+          title: string
+          userid: string
         }
         Insert: {
           created_at?: string
-          id?: number
-          name?: string
-          userId?: string
+          id?: string
+          title?: string
+          userid?: string
         }
         Update: {
           created_at?: string
-          id?: number
-          name?: string
-          userId?: string
+          id?: string
+          title?: string
+          userid?: string
         }
         Relationships: [
           {
-            foreignKeyName: "notebook_userId_fkey"
-            columns: ["userId"]
+            foreignKeyName: "notebook_userid_fkey"
+            columns: ["userid"]
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
@@ -40,48 +40,54 @@ export type Database = {
       }
       notes: {
         Row: {
-          content: string | null
           created_at: string
+          editable: boolean
           html: string | null
-          id: number
-          notebookId: number | null
-          textContent: string | null
+          id: string
+          json: Json | null
+          notebookid: string
+          placeholder: string
           title: string
           updated_at: string
-          userid: string | null
+          userid: string
+          viewable: boolean
         }
         Insert: {
-          content?: string | null
           created_at?: string
+          editable?: boolean
           html?: string | null
-          id?: number
-          notebookId?: number | null
-          textContent?: string | null
+          id?: string
+          json?: Json | null
+          notebookid?: string
+          placeholder?: string
           title?: string
           updated_at?: string
-          userid?: string | null
+          userid?: string
+          viewable?: boolean
         }
         Update: {
-          content?: string | null
           created_at?: string
+          editable?: boolean
           html?: string | null
-          id?: number
-          notebookId?: number | null
-          textContent?: string | null
+          id?: string
+          json?: Json | null
+          notebookid?: string
+          placeholder?: string
           title?: string
           updated_at?: string
-          userid?: string | null
+          userid?: string
+          viewable?: boolean
         }
         Relationships: [
           {
-            foreignKeyName: "notes_notebookId_fkey"
-            columns: ["notebookId"]
+            foreignKeyName: "notes_notebookid_fkey"
+            columns: ["notebookid"]
             isOneToOne: false
             referencedRelation: "notebook"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "notes_userId_fkey"
+            foreignKeyName: "notes_userid_fkey"
             columns: ["userid"]
             isOneToOne: false
             referencedRelation: "users"

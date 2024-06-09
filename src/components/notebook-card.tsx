@@ -15,7 +15,7 @@ export const NotebookCard = ({
   };
 }) => {
   return (
-    <Link href={`/dashboard/${notebook.id}`} passHref>
+    <Link href={`/dashboard/notebook/${notebook.id}`} passHref>
       <div className="flex border rounded-md p-3 items-center hover:bg-muted transition-colors  justify-start gap-4">
         <div
           className={buttonVariants({
@@ -26,7 +26,7 @@ export const NotebookCard = ({
           <Book />
         </div>
         <div>
-          <p className="font-bold text-sm">{notebook.name}</p>
+          <p className="font-bold text-sm">{notebook.title}</p>
           <p className="text-xs">{notebook.notes.at(0)?.count} notes</p>
         </div>
       </div>
