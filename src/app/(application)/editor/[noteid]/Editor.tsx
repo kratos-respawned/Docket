@@ -10,7 +10,7 @@ import { TextButtons } from "@/components/editor/editor-text-buttons";
 import {
   slashCommand,
   suggestionItems,
-} from "@/components/createSuggestions";
+} from "@/components/editor/editor-suggestions";
 import {
   EditorBubble,
   EditorCommand,
@@ -42,9 +42,15 @@ const highlightCodeblocks = (content: string) => {
   });
   return new XMLSerializer().serializeToString(doc);
 };
-export const Editor = () => {
+export const Editor = ({
+  note,
+}: {
+  note: { title: string; content: string | null };
+}) => {
   const router = useRouter();
-  const [content, setContent] = useState<JSONContent | undefined>();
+  const [content, setContent] = useState<JSONContent | undefined>(
+    note.content ? JSON.parse(note.content) : undefined
+  );
   const [charsCount, setCharsCount] = useState();
   const [openNode, setOpenNode] = useState(false);
   const [openLink, setOpenLink] = useState(false);
@@ -55,7 +61,7 @@ export const Editor = () => {
       setCharsCount(editor.storage?.characterCount?.words());
       const json = editor.getJSON();
       setContent(json);
-      console.log(editor.getHTML());;
+      console.log(editor.getHTML());
       // setSaveStatus("Saved");
       // window.localStorage.setItem(
       //   "html-content",
@@ -84,7 +90,7 @@ export const Editor = () => {
       </div>
       <div className=" mx-auto max-w-4xl">
         <ResizableText
-          placeholder="Title"
+          placeholder={note.title}
           className=" w-full resize-none appearance-none overflow-hidden bg-transparent text-5xl font-bold focus:outline-none"
         />
         <div className="relative w-full ">

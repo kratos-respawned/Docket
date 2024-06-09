@@ -1,21 +1,38 @@
+import { NoteCard } from "@/components/note-card";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { authRedirect } from "@/lib/authredirect";
+import { createServerClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { Book } from "lucide-react";
 import Link from "next/link";
+import { notFound, redirect } from "next/navigation";
 
-export default function NotebookPage() {
-  const config = {
-    title: "Personal",
-  };
+export default async function NotebookPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const supabase = createServerClient();
+  await authRedirect();
+  const { data: notebookData, error: notebookError } = await supabase
+    .from("notebook")
+    .select("*")
+    .eq("id", params.id)
+    .single();
+  if (!notebookData) notFound();
+  const { data: notes, error } = await supabase
+    .from("notes")
+    .select(`id,title,content`)
+    .eq("notebookId", params.id);
   return (
     <section>
       {/* TODO: abstract header into a separate component with search bar as children */}
       <header className=" md:h-[60px] px-6 items-center md:border-b md:flex justify-between">
         <h1 className="block font-semibold text-xl md:text-2xl">
-          {config.title}
+          {notebookData.name}
         </h1>
         <div className="flex gap-6">
           <div
@@ -41,30 +58,9 @@ export default function NotebookPage() {
         </div>
         <ScrollArea className="    md:h-[calc(100vh-9rem)]   ">
           <div className="grid gap-4 px-5 md:p-3">
-            {Array(10)
-              .fill(0)
-              .map((_, i) => (
-                <Link href="/editor" key={i} passHref>
-                  <Card className="hover:bg-muted">
-                    <CardContent className="pt-6">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h2 className="text-lg font-medium text-gray-900 dark:text-gray-50">
-                            A Moment of Gratitude
-                          </h2>
-                          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                            As I sit here, I'm filled with a sense of gratitude
-                            for the small moments that make up my day...
-                          </p>
-                        </div>
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
-                          May 12, 2023
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
+            {notes?.map((note) => (
+              <NoteCard note={note} key={note.id} />
+            ))}
           </div>
         </ScrollArea>
       </section>

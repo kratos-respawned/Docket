@@ -18,11 +18,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useRouter } from "next/navigation";
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-export function SignUpForm({ className, ...props }: UserAuthFormProps) {
+export function SignUpForm() {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const router = useRouter();
   const form = useForm<signUpSchema>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -31,13 +31,13 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
     },
   });
   const supabase = createClient();
-  const googleSignIn = async () => {
+  const githubSignIn = async () => {
     setIsLoading(true);
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       // provider: "google",
       provider: "github",
       options: {
-        redirectTo: "/dashboard",
+        // redirectTo: "/",
         // queryParams: {
         //   access_type: "offline",
         //   prompt: "consent",
@@ -48,6 +48,7 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
     if (error) {
       console.error("Error signing in with Google", error);
     }
+    console.log(data);
   };
   async function signUp(formdata: signUpSchema) {
     setIsLoading(false);
@@ -66,7 +67,7 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
   }
 
   return (
-    <div className={cn("grid gap-6", className)} {...props}>
+    <div className={cn("grid gap-6")}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(signUp)}>
           <div className="grid gap-2">
@@ -131,12 +132,8 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
           </span>
         </div>
       </div>
-      <Button
-        onClick={googleSignIn}
-        variant="outline"
-        type="button"
-        disabled={isLoading}
-      >
+
+      <Button onClick={githubSignIn} variant="outline" disabled={isLoading}>
         {isLoading ? (
           <Loader className="mr-2 h-4 w-4 animate-spin" />
         ) : (

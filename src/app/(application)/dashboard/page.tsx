@@ -1,15 +1,20 @@
+import { NotebookCard } from "@/components/notebook-card";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { authRedirect } from "@/lib/authredirect";
+import { createServerClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 import { PlusIcon } from "@radix-ui/react-icons";
-import { Book } from "lucide-react";
-import Link from "next/link";
 
-export default function NotebookPage() {
-  const Arr = [];
+export const dynamic = "force-dynamic";
+export default async function NotebookPage() {
+  const supabase = createServerClient();
+  await authRedirect();
+  const { data, error } = await supabase
+    .from("notebook")
+    .select("*, notes(count)");
   return (
     <section>
-      {/* TODO: abstract header into a separate component with search bar as children */}
       <header className=" md:h-[60px] px-6 items-center md:border-b md:flex justify-between">
         <h1 className="block font-semibold text-xl md:text-2xl">Notebooks</h1>
         <div className="flex gap-6">
@@ -36,21 +41,9 @@ export default function NotebookPage() {
         </div>
         <ScrollArea className=" md:border   rounded-lg   md:h-[calc(100vh-9rem)]   ">
           <div className="grid gap-4 px-5 md:p-3">
-            {Array(10)
-              .fill(0)
-              .map((_, i) => (
-                <Link href="/dashboard/notes" key={i} passHref>
-                <div className="flex border rounded-md p-3 items-center hover:bg-muted transition-colors  justify-start gap-4">
-                  <div className={buttonVariants({size:"icon",className:"h-10 w-10 bg-primary/90 hover:bg-primary/70"})}>
-                  <Book  />
-                  </div>
-                  <div>
-                    <p className="font-bold text-sm">Personal</p>
-                    <p className="text-xs">5 notes</p>
-                  </div>
-                </div>
-                </Link>
-              ))}
+            {data?.map((notebook) => (
+              <NotebookCard notebook={notebook} key={notebook.id} />
+            ))}
           </div>
         </ScrollArea>
       </section>

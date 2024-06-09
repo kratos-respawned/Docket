@@ -18,10 +18,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useRouter } from "next/navigation";
+
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function SignInForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const router = useRouter();
   const form = useForm<signInSchema>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -30,14 +33,13 @@ export function SignInForm({ className, ...props }: UserAuthFormProps) {
     },
   });
   const supabase = createClient();
-
-  const googleSignIn = async () => {
+  const githubSignIn = async () => {
     setIsLoading(true);
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       // provider: "google",
       provider: "github",
       options: {
-        redirectTo: "/dashboard",
+        // redirectTo: "/",
         // queryParams: {
         //   access_type: "offline",
         //   prompt: "consent",
@@ -47,6 +49,8 @@ export function SignInForm({ className, ...props }: UserAuthFormProps) {
     setIsLoading(false);
     if (error) {
       console.error("Error signing in with Google", error);
+    } else {
+      router.push("/");
     }
   };
   const Login = async (formdata: signInSchema) => {
@@ -121,12 +125,8 @@ export function SignInForm({ className, ...props }: UserAuthFormProps) {
           </span>
         </div>
       </div>
-      <Button
-        onClick={googleSignIn}
-        variant="outline"
-        type="button"
-        disabled={isLoading}
-      >
+
+      <Button onClick={githubSignIn} variant="outline" disabled={isLoading}>
         {isLoading ? (
           <Loader className="mr-2 h-4 w-4 animate-spin" />
         ) : (

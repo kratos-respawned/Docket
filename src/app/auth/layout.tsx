@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import { ReaderIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 
@@ -19,7 +20,7 @@ export default function AuthLayout({
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
             <p className="text-lg">
-              "Docket is the best project management tool I've ever used. It's
+              "Docket is the best project management tool I&apos;ve ever used. It&apos;s
               simple, easy to use, and incredibly powerful."
             </p>
             <footer className="text-sm">Pallab Sonowal</footer>

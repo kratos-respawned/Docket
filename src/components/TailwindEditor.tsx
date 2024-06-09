@@ -4,7 +4,7 @@ import { TextButtons } from "@/components/editor/editor-text-buttons";
 import {
   slashCommand,
   suggestionItems,
-} from "@/components/createSuggestions";
+} from "@/components/editor/editor-suggestions";
 import {
   EditorBubble,
   EditorCommand,

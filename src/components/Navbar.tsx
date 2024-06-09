@@ -3,8 +3,7 @@ import { Button, buttonVariants } from "./ui/button";
 import { createServerClient } from "@/lib/supabase/server";
 import { ReaderIcon } from "@radix-ui/react-icons";
 import { cn } from "@/lib/utils";
-import { SignOutBtn } from "./signout-btn";
-
+import { signOut } from "@/app/auth/auth-actions";
 export const Navbar = async () => {
   const supabase = createServerClient();
   const { data } = await supabase.auth.getUser();
@@ -54,7 +53,9 @@ export const Navbar = async () => {
             Sign In
           </Link>
         ) : (
-          <SignOutBtn />
+          <form action={signOut}>
+            <Button>Sign out</Button>
+          </form>
         )}
       </div>
     </header>
