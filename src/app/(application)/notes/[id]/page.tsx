@@ -16,7 +16,7 @@ export default async function NotePage({ params }: { params: { id: string } }) {
     .select(`title,html,id`)
     .eq("id", params.id)
     .single();
-  if (error || !note) return "Not found";
+  if (error || !note) notFound();
   return (
     <>
       {/* <Button onClick={() => router.back()}>Back</Button> */}
@@ -30,7 +30,7 @@ export default async function NotePage({ params }: { params: { id: string } }) {
         </div>
         <section className="prose px-4 md:px-8 mt-4 max-w-4xl">
           <h1>{note.title}</h1>
-          <section  dangerouslySetInnerHTML={{ __html: note.html || "" }} />
+          <section dangerouslySetInnerHTML={{ __html: note.html || "" }} />
         </section>
       </main>
     </>
