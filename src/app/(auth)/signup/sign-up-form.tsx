@@ -53,7 +53,6 @@ export function SignUpForm() {
       password,
       options: {
         data: { name: formdata.name, user_name: formdata.email.split("@")[0] },
-        emailRedirectTo: `${location.origin}/auth/confirm`,
       },
     });
     setIsLoading(false);
