@@ -8,25 +8,26 @@ import { cn } from "@/lib/utils";
 
 export default async function NotePage({ params }: { params: { id: string } }) {
   const supabase = createServerClient();
-  const { data: session, error: sessionError } = await supabase.auth.getUser();
-  if (sessionError) throw sessionError;
-  if (!session.user) notFound();
   const { data: note, error } = await supabase
     .from("notes")
-    .select(`title,html,id`)
+    .select(`title,html,id,viewable,editable,userid`)
     .eq("id", params.id)
     .single();
-  if (error || !note) notFound();
+  const { data: session, error: userError } = await supabase.auth.getUser();
+
+  if (error || !note || userError) notFound();
   return (
     <>
       {/* <Button onClick={() => router.back()}>Back</Button> */}
       <main className=" container px-4 sm:px-10 md:px-16 py-8 ">
         <div className="flex items-center justify-between">
           <Backbutton />
-          <Link href={`/editor/${note.id}`} className={cn(buttonVariants())}>
-            <Pencil className="w-5 h-5 cursor-pointer" />
-            Edit
-          </Link>
+          {(session.user.id === note.userid || note.editable) && (
+            <Link href={`/editor/${note.id}`} className={cn(buttonVariants())}>
+              <Pencil className="w-4 h-4 cursor-pointer mr-2" />
+              Edit
+            </Link>
+          )}
         </div>
         <section className="prose px-4 md:px-8 mt-4 max-w-4xl">
           <h1>{note.title}</h1>

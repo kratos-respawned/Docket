@@ -55,6 +55,7 @@ export const Editor = ({
     note.json as JSONContent
   );
   const [Html, setHtml] = useState<string>("");
+  const [placeholder, setPlaceholder] = useState<string>("");
   const [charsCount, setCharsCount] = useState();
   const [openNode, setOpenNode] = useState(false);
   const [openLink, setOpenLink] = useState(false);
@@ -67,7 +68,12 @@ export const Editor = ({
     setLoading(true);
     const { data, error } = await supabase
       .from("notes")
-      .update({ json: content, html: Html, title: titleRef.current?.value })
+      .update({
+        json: content,
+        html: Html,
+        title: titleRef.current?.value,
+        placeholder,
+      })
       .eq("id", note.id)
       .single();
     setLoading(false);
@@ -81,6 +87,7 @@ export const Editor = ({
       const json = editor.getJSON();
       setContent(json);
       setHtml(highlightCodeblocks(editor.getHTML()));
+      setPlaceholder(editor.getText().slice(0, 100));
       setSaveStatus("Unsaved");
     },
     500

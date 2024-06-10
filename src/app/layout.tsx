@@ -4,6 +4,7 @@ import "./prosemirror.css";
 import type { Metadata } from "next";
 import { Yeseva_One } from "next/font/google";
 import { Montserrat } from "next/font/google";
+import { Toaster } from "sonner";
 const yeserva = Yeseva_One({
   weight: ["400"],
   subsets: ["latin"],
@@ -40,6 +41,7 @@ export default function RootLayout({
         )}
       >
         {children}
+        <Toaster/>
       </body>
       {/* </AuthProvider> */}
     </html>

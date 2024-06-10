@@ -6,6 +6,7 @@ import { authRedirect } from "@/lib/authredirect";
 import { createServerClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 import { PlusIcon } from "@radix-ui/react-icons";
+import { NewNotebookBtn } from "./new-notebook-button";
 
 export const dynamic = "force-dynamic";
 export default async function NotebookPage() {
@@ -34,12 +35,7 @@ export default async function NotebookPage() {
         </div>
       </header>
       <section className=" md:px-6 flex flex-col gap-3 pt-3 pb-4   md:pb-0 ">
-        <div className="px-6 md:px-0 flex items-center justify-end md:justify-between">
-          <Button className="flex ml-auto max-sm:px-2.5 max-sm:py-2 max-sm:text-xs ">
-            <PlusIcon className=" w-4  md:w-5   aspect-square mr-2" />
-            New Notebook
-          </Button>
-        </div>
+        <NewNotebookBtn  className="flex ml-auto"/>
         <ScrollArea className=" md:border   rounded-lg relative h-[calc(100vh-10rem)]  md:h-[calc(100vh-9rem)]   ">
           <div className="grid gap-4 px-5 md:p-3 ">
             {data?.length === 0 ? (
