@@ -69,7 +69,10 @@ export const NoteCard = ({
   const toggleSharing = async () => {
     const { data, error } = await supabase
       .from("notes")
-      .update({ editable: !note.editable })
+      .update({
+        editable: !note.editable,
+        viewable: !note.editable ? true : note.viewable,
+      })
       .eq("id", note.id);
     if (!note.editable) {
       toast("Sharing Enabled", {
