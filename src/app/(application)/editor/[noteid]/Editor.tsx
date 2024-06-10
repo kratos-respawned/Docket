@@ -34,7 +34,7 @@ import { Separator } from "@/components/ui/separator";
 import { LinkSelector } from "@/components/editor/editor-link-selector";
 import { ColorSelector } from "@/components/editor/editor-color-selector";
 import { Json, Tables } from "@/typings/supabase";
-import { useSupabaseClient } from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/client";
 import { revalidate } from "../../dashboard/note-actions";
 const extensions = [...defaultExtensions, slashCommand];
 const highlightCodeblocks = (content: string) => {
@@ -65,7 +65,7 @@ export const Editor = ({
   const [saveStatus, setSaveStatus] = useState<"Saved" | "Unsaved">("Unsaved");
   const [loading, setLoading] = useState(false);
   const saveNote = async () => {
-    const supabase = useSupabaseClient();
+    const supabase = createClient();
     setLoading(true);
     const { data, error } = await supabase
       .from("notes")

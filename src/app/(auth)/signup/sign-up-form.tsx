@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { Github, KeyRound, Loader } from "lucide-react";
 import * as React from "react";
-import { useSupabaseClient } from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/client";
 import { useForm } from "react-hook-form";
 import { signUpSchema } from "@/validators/sign-up-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,7 +31,7 @@ export function SignUpForm() {
       password: "",
     },
   });
-  const supabase = useSupabaseClient();
+  const supabase = createClient();
   const githubSignIn = async () => {
     setIsLoading(true);
     const { data, error } = await supabase.auth.signInWithOAuth({
@@ -46,7 +46,7 @@ export function SignUpForm() {
     }
   };
   async function signUp(formdata: signUpSchema) {
-    setIsLoading(false);
+    setIsLoading(true);
     const { email, password } = formdata;
     const { error } = await supabase.auth.signUp({
       email,
