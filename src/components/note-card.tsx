@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export const NoteCard = ({
   note,
@@ -45,6 +46,23 @@ export const NoteCard = ({
       .from("notes")
       .update({ viewable: !note.viewable })
       .eq("id", note.id);
+    if (!note.viewable) {
+      toast("Visibility Enabled", {
+        description: "This note can now be viewed by others",
+        action: {
+          label: "Copy Link",
+          onClick: () =>
+            navigator.clipboard.writeText(
+              `${process.env.NEXT_PUBLIC_URL}/notes/${note.id}`
+            ),
+        },
+      });
+    } else {
+      toast("Visibility Disabled", {
+        description: "This note can no longer be viewed by others",
+      });
+    }
+
     if (!error) router.refresh();
     else console.log(error);
   };
@@ -53,6 +71,22 @@ export const NoteCard = ({
       .from("notes")
       .update({ editable: !note.editable })
       .eq("id", note.id);
+    if (!note.editable) {
+      toast("Sharing Enabled", {
+        description: "This note can now be edited by others",
+        action: {
+          label: "Copy Link",
+          onClick: () =>
+            navigator.clipboard.writeText(
+              `${process.env.NEXT_PUBLIC_URL}/editor/${note.id}`
+            ),
+        },
+      });
+    } else {
+      toast("Sharing Disabled", {
+        description: "This note can no longer be edited by others",
+      });
+    }
     if (!error) router.refresh();
     else console.log(error);
   };
