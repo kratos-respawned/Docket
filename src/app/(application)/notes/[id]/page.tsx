@@ -14,22 +14,20 @@ export default async function NotePage({ params }: { params: { id: string } }) {
     .eq("id", params.id)
     .single();
   const { data: session, error: userError } = await supabase.auth.getUser();
-
-  if (error || !note || userError) notFound();
+  if (error || !note) notFound();
   return (
     <>
-      {/* <Button onClick={() => router.back()}>Back</Button> */}
-      <main className=" container px-4 sm:px-10 md:px-16 py-8 ">
+      <main className="  px-4 sm:px-10 md:px-16 py-8 ">
         <div className="flex items-center justify-between">
           <Backbutton />
-          {(session.user.id === note.userid || note.editable) && (
+          {(session?.user?.id === note.userid || note.editable) && (
             <Link href={`/editor/${note.id}`} className={cn(buttonVariants())}>
               <Pencil className="w-4 h-4 cursor-pointer mr-2" />
               Edit
             </Link>
           )}
         </div>
-        <section className="prose px-4 md:px-8 mt-4 max-w-4xl">
+        <section className="prose px-4 md:px-8 mt-4 max-w-4xl mx-auto break-all">
           <h1>{note.title}</h1>
           <section dangerouslySetInnerHTML={{ __html: note.html || "" }} />
         </section>

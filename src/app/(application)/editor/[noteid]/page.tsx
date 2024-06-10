@@ -10,7 +10,7 @@ export default async function EditorPage({
   const supabase = createServerClient();
   const { data: note, error } = await supabase
     .from("notes")
-    .select(`title,json,id`)
+    .select(`title,json,id,notebookid`)
     .eq("id", params.noteid)
     .single();
   return <>{note ? <Editor note={note} /> : "not found"}</>;

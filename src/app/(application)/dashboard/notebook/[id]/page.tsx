@@ -51,7 +51,7 @@ export default async function NotebookPage({
         </div>
       </header>
       <section className=" md:px-6 flex flex-col gap-3 pt-3 pb-4   md:pb-0 ">
-        <NewNoteBtn notebookId={params.id} className="ml-auto flex" />
+        <NewNoteBtn notebookId={params.id} className="ml-auto flex max-md:mr-6" />
         <ScrollArea className="  h-[calc(100vh-10rem)] relative  md:h-[calc(100vh-9rem)]   ">
           <div className="grid gap-4 px-5 md:p-3 ">
             {notes?.length === 0 ? (

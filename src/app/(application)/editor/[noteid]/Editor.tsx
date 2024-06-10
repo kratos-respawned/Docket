@@ -35,6 +35,7 @@ import { LinkSelector } from "@/components/editor/editor-link-selector";
 import { ColorSelector } from "@/components/editor/editor-color-selector";
 import { Json, Tables } from "@/typings/supabase";
 import { createClient } from "@/lib/supabase/client";
+import { revalidate } from "../../dashboard/note-actions";
 const extensions = [...defaultExtensions, slashCommand];
 const highlightCodeblocks = (content: string) => {
   const doc = new DOMParser().parseFromString(content, "text/html");
@@ -48,7 +49,7 @@ const highlightCodeblocks = (content: string) => {
 export const Editor = ({
   note,
 }: {
-  note: { title: string; json: Json; id: string };
+  note: { title: string; json: Json; id: string; notebookid: string };
 }) => {
   const router = useRouter();
   const [content, setContent] = useState<JSONContent | undefined>(
@@ -60,7 +61,7 @@ export const Editor = ({
   const [openNode, setOpenNode] = useState(false);
   const [openLink, setOpenLink] = useState(false);
   const [openColor, setOpenColor] = useState(false);
-  const titleRef = useRef<HTMLTextAreaElement>(null);
+  const [title, setTitle] = useState(note.title);
   const [saveStatus, setSaveStatus] = useState<"Saved" | "Unsaved">("Unsaved");
   const [loading, setLoading] = useState(false);
   const saveNote = async () => {
@@ -71,12 +72,14 @@ export const Editor = ({
       .update({
         json: content,
         html: Html,
-        title: titleRef.current?.value,
+        title: title,
         placeholder,
       })
       .eq("id", note.id)
       .single();
     setLoading(false);
+    await revalidate(note.notebookid);
+
     if (error) {
       console.error(error);
     } else setSaveStatus("Saved");
@@ -104,13 +107,14 @@ export const Editor = ({
           <ChevronLeft />
           Back
         </Button>
-        <Button disabled={loading} onClick={saveNote}>
-          {loading ? "Saving..." : "Save"}
-        </Button>
+        <form action={saveNote}>
+          <Button disabled={loading}>{loading ? "Saving..." : "Save"}</Button>
+        </form>
       </div>
       <div className=" mx-auto max-w-4xl">
         <ResizableText
-          ref={titleRef}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           placeholder={note.title}
           className=" w-full resize-none appearance-none overflow-hidden bg-transparent text-5xl font-bold focus:outline-none"
         />
