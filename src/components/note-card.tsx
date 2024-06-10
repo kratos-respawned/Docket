@@ -24,7 +24,7 @@ import {
   ShareIcon,
   Trash2,
 } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { useSupabaseClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -40,7 +40,7 @@ export const NoteCard = ({
   };
 }) => {
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = useSupabaseClient();
   const toggleVisibility = async () => {
     const { data, error } = await supabase
       .from("notes")

@@ -1,11 +1,11 @@
 "use client";
-import { createClient } from "@/lib/supabase/client";
+import { useSupabaseClient } from "@/lib/supabase/client";
 import Script from "next/script";
 
 export const GoogleOneTap = () => {
   //   async function handleSignInWithGoogle(response: any) {
   //     console.log(response);
-  //     const supabase = createClient();
+  //     const supabase = useSupabaseClient();
   //     const { data, error } = await supabase.auth.signInWithIdToken({
   //       provider: "google",
   //       token: response.credential,

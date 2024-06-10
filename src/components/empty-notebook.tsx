@@ -24,7 +24,7 @@ import { Input } from "./ui/input";
 import { useState } from "react";
 
 import { Loader2 } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { useSupabaseClient } from "@/lib/supabase/client";
 import { revalidateNotebook } from "@/app/(application)/dashboard/notebook-actions";
 import { NewNotebookBtn } from "@/app/(application)/dashboard/new-notebook-button";
 

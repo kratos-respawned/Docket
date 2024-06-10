@@ -3,10 +3,11 @@ import { cn } from "@/lib/utils";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { SignInForm } from "../signin/sign-in-form";
+
 import { ReaderIcon } from "@radix-ui/react-icons";
 import { createServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { SignInForm } from "./sign-in-form";
 
 export const metadata: Metadata = {
   title: "Sign In - Docket",
@@ -18,13 +19,13 @@ export default async function AuthenticationPage() {
   const supabase = createServerClient();
   const { data, error } = await supabase.auth.getUser();
   if (data.user) {
-    console.log(data.user?.id)
+    console.log(data.user?.id);
     redirect("/");
   }
   return (
     <div className="lg:p-8">
       <Link
-        href="/auth/signup"
+        href="/signup"
         className={cn(
           buttonVariants({ variant: "ghost" }),
           "absolute right-4 top-4 md:right-8 md:top-8"

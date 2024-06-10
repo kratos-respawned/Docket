@@ -1,5 +1,5 @@
 "use client"
-import { createClient } from "@/lib/supabase/client";
+import { useSupabaseClient } from "@/lib/supabase/client";
 import { newNotebookSchema } from "@/validators/new-notebook-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -33,7 +33,7 @@ export const NewNotebookBtn = ({ className }: { className?: string }) => {
     },
   });
   const [open, setOpen] = useState(false);
-  const supabase = createClient();
+  const supabase = useSupabaseClient();
   const createNotebook = async (values: newNotebookSchema) => {
     try {
       const { data: session, error: authError } = await supabase.auth.getUser();

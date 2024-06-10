@@ -1,12 +1,12 @@
 "use client";
-import { createClient } from "@/lib/supabase/client";
+import { useSupabaseClient } from "@/lib/supabase/client";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 export const SignOutBtn = () => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
-  const supabase = createClient();
+  const supabase = useSupabaseClient();
   async function signOut() {
     setLoading(true);
     const { error } = await supabase.auth.signOut();
@@ -14,7 +14,7 @@ export const SignOutBtn = () => {
     if (error) {
       console.error("Error signing out", error);
     }
-    router.push("/auth/signin");
+    router.push("/login");
   }
 
   return (

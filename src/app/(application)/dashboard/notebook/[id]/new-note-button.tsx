@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { createClient } from "@/lib/supabase/client";
+import { useSupabaseClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { Loader2 } from "lucide-react";
@@ -19,7 +19,7 @@ export const NewNoteBtn = ({
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const createNote = async () => {
-    const supabase = createClient();
+    const supabase = useSupabaseClient();
     setLoading(true);
     try {
       const { data: session, error } = await supabase.auth.getUser();

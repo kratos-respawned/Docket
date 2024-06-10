@@ -25,7 +25,7 @@ export default async function SignUpPage() {
   return (
     <div className="lg:p-8 place-self-center">
       <Link
-        href="/auth/signin"
+        href="/login"
         className={cn(
           buttonVariants({ variant: "ghost" }),
           "absolute right-4 top-4 md:right-8 md:top-8"

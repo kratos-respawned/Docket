@@ -6,9 +6,9 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { Github, KeyRound, Loader } from "lucide-react";
 import * as React from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useSupabaseClient } from "@/lib/supabase/client";
 import { useForm } from "react-hook-form";
-import { signUpSchema } from "@/validators/sign-up-schema";
+import { signInSchema } from "@/validators/sign-in-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -20,70 +20,51 @@ import {
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
 
-export function SignUpForm() {
+interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+export function SignInForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const router = useRouter();
-  const form = useForm<signUpSchema>({
-    resolver: zodResolver(signUpSchema),
+  const form = useForm<signInSchema>({
+    resolver: zodResolver(signInSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
-  const supabase = createClient();
+  const supabase = useSupabaseClient();
   const githubSignIn = async () => {
     setIsLoading(true);
     const { data, error } = await supabase.auth.signInWithOAuth({
-      // provider: "google",
       provider: "github",
       options: {
-        // redirectTo: "/",
-        // queryParams: {
-        //   access_type: "offline",
-        //   prompt: "consent",
-        // },
+        redirectTo: `${location.origin}/auth/callback`,
       },
     });
     setIsLoading(false);
     if (error) {
       console.error("Error signing in with Google", error);
     }
-    console.log(data);
   };
-  async function signUp(formdata: signUpSchema) {
-    setIsLoading(false);
+  const Login = async (formdata: signInSchema) => {
     const { email, password } = formdata;
-    const { error } = await supabase.auth.signUp({
+    setIsLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
-      options: {
-        data: { name: formdata.name },
-      },
     });
     setIsLoading(false);
     if (error) {
-      console.error("Error signing up with email and password", error);
+      console.error("Error signing in with email and password", error);
+    } else {
+      router.push("/");
     }
-  }
-
+  };
   return (
-    <div className={cn("grid gap-6")}>
+    <div className={cn("grid gap-6", className)} {...props}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(signUp)}>
+        <form onSubmit={form.handleSubmit(Login)}>
           <div className="grid gap-2">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Rick Astley" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="email"
@@ -114,14 +95,21 @@ export function SignUpForm() {
                 </FormItem>
               )}
             />
+
             <Button disabled={isLoading}>
               {isLoading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
-              Sign Up with Email
+              Sign In
+            </Button>
+            <Button
+              type="button"
+              variant={"link"}
+              className="w-fit flex ml-auto text-xs px-0 h-0"
+            >
+              Forget Password
             </Button>
           </div>
         </form>
       </Form>
-
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />

@@ -3,7 +3,8 @@ import { Button, buttonVariants } from "./ui/button";
 import { createServerClient } from "@/lib/supabase/server";
 import { ReaderIcon } from "@radix-ui/react-icons";
 import { cn } from "@/lib/utils";
-import { signOut } from "@/app/auth/auth-actions";
+import { SignOutBtn } from "./signout-btn";
+// import { signOut } from "@/app/auth/auth-actions";
 export const Navbar = async () => {
   const supabase = createServerClient();
   const { data } = await supabase.auth.getUser();
@@ -49,13 +50,11 @@ export const Navbar = async () => {
 
       <div className="hidden lg:flex items-center gap-3">
         {!data.user ? (
-          <Link href={"/auth/signin"} className={cn(buttonVariants())}>
+          <Link href={"/login"} className={cn(buttonVariants())}>
             Sign In
           </Link>
         ) : (
-          <form action={signOut}>
-            <Button>Sign out</Button>
-          </form>
+          <SignOutBtn />
         )}
       </div>
     </header>

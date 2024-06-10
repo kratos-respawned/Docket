@@ -42,7 +42,7 @@ import { Input } from "./ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { newNotebookSchema } from "@/validators/new-notebook-schema";
-import { createClient } from "@/lib/supabase/client";
+import { useSupabaseClient } from "@/lib/supabase/client";
 
 export const NotebookCard = ({
   notebook,
@@ -57,7 +57,7 @@ export const NotebookCard = ({
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [loading, setIsLoading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const supabase = createClient();
+  const supabase = useSupabaseClient();
   const form = useForm<newNotebookSchema>({
     resolver: zodResolver(newNotebookSchema),
     defaultValues: {
