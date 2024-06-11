@@ -96,7 +96,7 @@ export const Editor = ({
     500
   );
   return (
-    <main className="px-10 py-8  space-y-12 container min-h-dvh">
+    <main className="px-5 sm:px-9 md:px-10 py-8  space-y-12 container min-h-dvh">
       <div className=" sticky z-50 isolate top-8 flex w-full items-center justify-between ">
         <Button
           disabled={loading}
@@ -111,7 +111,7 @@ export const Editor = ({
           <Button disabled={loading}>{loading ? "Saving..." : "Save"}</Button>
         </form>
       </div>
-      <div className=" mx-auto max-w-4xl">
+      <div className=" mx-auto max-w-4xl space-y-5">
         <ResizableText
           value={title}
           onChange={(e) => setTitle(e.target.value)}

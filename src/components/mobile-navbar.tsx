@@ -7,7 +7,7 @@ export const MobileNavbar = () => {
   return (
     <Sheet >
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="   lg:hidden">
+        <Button variant="ghost" size="icon" className="   md:hidden">
           <MenuIcon />
           <span className="sr-only">Open Navigation Menu</span>
         </Button>

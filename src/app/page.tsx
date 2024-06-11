@@ -10,10 +10,10 @@ export default function Home() {
   return (
     <section className="flex flex-col min-h-[100dvh]">
       <Navbar />
-      <main className="flex-1">
+      <main className="flex-1 container">
         <section
           className={
-            "mx-auto flex max-w-[980px] flex-col items-center gap-2 py-8 md:py-12 md:pb-8 lg:py-24 lg:pb-20"
+            " mx-auto flex max-w-[980px] flex-col items-center gap-5 py-8 md:py-12 md:pb-8 lg:py-24 lg:pb-20"
           }
         >
           <Link
@@ -25,26 +25,28 @@ export default function Home() {
             <span>Introducing Docket 2.0</span>
             <ArrowRightIcon className="ml-1 h-4 w-4" />
           </Link>
-          <h1 className="text-center animate-in font-heading text-3xl font-bold leading-tight  mx-auto md:text-5xl lg:leading-[1.1]">
-            Your Personal Note Taking App
-          </h1>
-          <p className="max-w-[750px] text-center text-lg font-light text-foreground text-balance">
-            Docket is a simple note taking app that helps you stay organized and
-            focused.
-          </p>
-          <div className="flex w-full items-center justify-center space-x-4 py-4 md:pb-10">
-            <Link href="/dashboard" className={cn(buttonVariants())}>
-              Get Started
-            </Link>
-            <Link
-              target="_blank"
-              rel="noreferrer"
-              href={"/"}
-              className={cn(buttonVariants({ variant: "outline" }))}
-            >
-              <Github className="mr-2 h-4 w-4" />
-              GitHub
-            </Link>
+          <div className="grid gap-3">
+            <h1 className="text-center animate-in font-heading text-2xl sm:text-3xl font-bold leading-tight  mx-auto md:text-5xl lg:leading-[1.1]">
+              Your Personal Note Taking App
+            </h1>
+            <p className="max-w-[750px] text-center text-base sm:text-lg font-light text-foreground text-balance">
+              Docket is a simple note taking app that helps you stay organized
+              and focused.
+            </p>
+            <div className="flex w-full items-center justify-center space-x-4 py-4 md:pb-10">
+              <Link href="/dashboard" className={cn(buttonVariants())}>
+                Get Started
+              </Link>
+              <Link
+                target="_blank"
+                rel="noreferrer"
+                href={"/"}
+                className={cn(buttonVariants({ variant: "outline" }))}
+              >
+                <Github className="mr-2 h-4 w-4" />
+                GitHub
+              </Link>
+            </div>
           </div>
         </section>
       </main>

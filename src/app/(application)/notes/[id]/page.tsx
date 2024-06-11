@@ -27,7 +27,7 @@ export default async function NotePage({ params }: { params: { id: string } }) {
             </Link>
           )}
         </div>
-        <section className="prose px-4 md:px-8 mt-4 max-w-4xl mx-auto break-all">
+        <section className="prose px-4 md:px-8 mt-8 max-w-4xl mx-auto break-all">
           <h1>{note.title}</h1>
           <section dangerouslySetInnerHTML={{ __html: note.html || "" }} />
         </section>
