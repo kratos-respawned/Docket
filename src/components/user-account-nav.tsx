@@ -1,7 +1,3 @@
-"use client";
-
-import Link from "next/link";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,35 +5,29 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import { UserAvatar } from "@/components/ui/avatar";
+import Link from "next/link";
 
-import { buttonVariants } from "./ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { LogOut, Settings, User } from "lucide-react";
+import { auth } from "@/auth";
+import { logout } from "@/lib/auth/actions/logout";
 import { ReaderIcon } from "@radix-ui/react-icons";
-import { createClient } from "@/lib/supabase/client";
-import type { User as UserType } from "@supabase/supabase-js";
-import { useRouter } from "next/navigation";
+import { LogOut, User } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
-export function UserAccountNav({ user }: { user: UserType }) {
-  const supabase = createClient();
-  const router = useRouter();
-  const signOut = async () => {
-    await supabase.auth.signOut();
-    router.refresh();
-  };
+export async function UserAccountNav() {
+  const session = await auth();
+  if (!session) return null;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar>
           <AvatarImage
             src={
-              user.user_metadata.avatar_url ||
+              session?.user.image ||
               "https://api.dicebear.com/8.x/pixel-art/svg"
             }
           />
           <AvatarFallback>
-            {((user.user_metadata.name || "Anon") as string)
+            {((session.user.name || "Anon") as string)
               ?.split(" ")
               .map((name) => name[0])
               .join("")}
@@ -47,14 +37,10 @@ export function UserAccountNav({ user }: { user: UserType }) {
       <DropdownMenuContent align="end">
         <div className="flex items-center justify-start gap-2 p-2">
           <div className="flex flex-col space-y-1 leading-none">
-            {user.user_metadata.name && (
-              <p className="font-medium">{user.user_metadata.name}</p>
-            )}
-            {user.email && (
-              <p className="w-[200px] truncate text-sm text-muted-foreground">
-                {user.email}
-              </p>
-            )}
+            <p className="font-medium">{session.user.name}</p>
+            <p className="w-[200px] truncate text-sm text-muted-foreground">
+              {session.user.email}
+            </p>
           </div>
         </div>
         <DropdownMenuSeparator />
@@ -72,7 +58,7 @@ export function UserAccountNav({ user }: { user: UserType }) {
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={signOut}>
+        <DropdownMenuItem onClick={logout}>
           <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
           <button>Sign Out</button>
         </DropdownMenuItem>

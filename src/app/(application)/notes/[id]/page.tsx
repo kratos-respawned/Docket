@@ -1,26 +1,39 @@
-import { Button, buttonVariants } from "@/components/ui/button";
-import { createServerClient } from "@/lib/supabase/server";
-import { notFound, useRouter } from "next/navigation";
-import { Backbutton } from "./backbutton";
-import Link from "next/link";
-import { Pencil } from "lucide-react";
+import { auth } from "@/auth";
+import { buttonVariants } from "@/components/ui/button";
+import { db } from "@/lib/db";
 import { cn } from "@/lib/utils";
+import { Pencil } from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { Backbutton } from "./backbutton";
 
 export default async function NotePage({ params }: { params: { id: string } }) {
-  const supabase = createServerClient();
-  const { data: note, error } = await supabase
-    .from("notes")
-    .select(`title,html,id,viewable,editable,userid`)
-    .eq("id", params.id)
-    .single();
-  const { data: session, error: userError } = await supabase.auth.getUser();
-  if (error || !note) notFound();
+  const note = await db.note
+    .findUnique({
+      where: {
+        id: params.id,
+      },
+      select: {
+        id: true,
+        title: true,
+        userID: true,
+        visibility: true,
+        html: true,
+      },
+    })
+    .catch(() => {
+      notFound();
+    });
+    const session = await auth();
+  if (!note) notFound();
+  if(note.visibility === "restricted" && note.userID !== session?.user.id) notFound();
   return (
     <>
       <main className="  px-4 sm:px-10 md:px-16 py-8 ">
         <div className="flex items-center justify-between">
           <Backbutton />
-          {(session?.user?.id === note.userid || note.editable) && (
+          {(session?.user.id === note.userID ||
+            note.visibility === "editable") && (
             <Link href={`/editor/${note.id}`} className={cn(buttonVariants())}>
               <Pencil className="w-4 h-4 cursor-pointer mr-2" />
               Edit

@@ -2,7 +2,8 @@ import { Navbar } from "@/components/Navbar";
 import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { ArrowRightIcon, Blocks, Github } from "lucide-react";
+import { SiGithub } from "@icons-pack/react-simple-icons";
+import { ArrowRightIcon, Blocks } from "lucide-react";
 
 import Link from "next/link";
 
@@ -43,7 +44,7 @@ export default function Home() {
                 href={"/"}
                 className={cn(buttonVariants({ variant: "outline" }))}
               >
-                <Github className="mr-2 h-4 w-4" />
+                <SiGithub className="mr-2 h-4 w-4" />
                 GitHub
               </Link>
             </div>
@@ -52,22 +53,4 @@ export default function Home() {
       </main>
     </section>
   );
-}
-{
-  /* <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
-<div className="container px-8 md:px-10">
-  <div className="flex flex-col items-center justify-center space-y-4 text-center">
-    <div className="space-y-2">
-      <h2 className="text-3xl font-heading font-bold  sm:text-4xl md:text-5xl">
-        Popular Trekking Destinations
-      </h2>
-      <p className="max-w-[700px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-        Explore the most breathtaking landscapes and challenge
-        yourself on unforgettable treks.
-      </p>
-    </div>
-  </div>
-  <div className="px-8 md:px-10 mt-8"></div>
-</div>
-</section> */
 }

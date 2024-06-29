@@ -1,7 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import { Button, buttonVariants } from "./ui/button";
+import {
+  deleteNotebookAction,
+  editNotebookAction,
+} from "@/app/(application)/dashboard/notebook-actions";
+import { cn } from "@/lib/utils";
+import { newNotebookSchema } from "@/validators/new-notebook-schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Book,
   EllipsisVertical,
@@ -9,18 +14,12 @@ import {
   PencilIcon,
   Trash2,
 } from "lucide-react";
-import { Tables } from "@/typings/supabase";
-import { cn } from "@/lib/utils";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { Button, buttonVariants } from "./ui/button";
 import {
   Dialog,
   DialogClose,
@@ -31,6 +30,14 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import {
   Form,
   FormControl,
   FormField,
@@ -39,52 +46,51 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { newNotebookSchema } from "@/validators/new-notebook-schema";
-import { createClient } from "@/lib/supabase/client";
 
 export const NotebookCard = ({
   notebook,
 }: {
-  notebook: Tables<"notebook"> & {
-    notes: {
-      count: number;
-    }[];
+  notebook: {
+    _count: {
+      notes: number;
+    };
+  } & {
+    id: string;
+    userId: string;
+    name: string;
   };
 }) => {
   const router = useRouter();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [loading, setIsLoading] = useState(false);
+  const [loading, startTransition] = useTransition();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const supabase = createClient();
   const form = useForm<newNotebookSchema>({
     resolver: zodResolver(newNotebookSchema),
     defaultValues: {
-      title: notebook.title,
+      title: notebook.name,
     },
   });
   const editNotebook = async (values: newNotebookSchema) => {
-    const { data, error } = await supabase
-      .from("notebook")
-      .update(values)
-      .eq("id", notebook.id);
-    if (!error) {
-      setEditDialogOpen(false);
-      router.refresh();
-    } else console.log(error);
+    startTransition(async () => {
+      const { error, success } = await editNotebookAction(
+        values.title,
+        notebook.id
+      );
+      if (!error) {
+        setEditDialogOpen(false);
+        toast("Success", { description: success });
+        router.refresh();
+      } else toast("Error", { description: error });
+    });
   };
   const deleteNotebook = async () => {
-    setIsLoading(true);
-    const { error } = await supabase
-      .from("notebook")
-      .delete()
-      .eq("id", notebook.id);
-    setIsLoading(false);
-    if (!error) {
-      setDeleteDialogOpen(false);
-      router.refresh();
-    } else console.log(error);
+    startTransition(async () => {
+      const { success, error } = await deleteNotebookAction(notebook.id);
+      if (!error) {
+        setDeleteDialogOpen(false);
+        router.refresh();
+      } else console.log(error);
+    });
   };
   return (
     <div className="flex border rounded-md p-3 items-center  transition-colors  justify-between gap-4">
@@ -105,9 +111,9 @@ export const NotebookCard = ({
               "p-0 h-fit font-bold"
             )}
           >
-            {notebook.title}
+            {notebook.name}
           </Link>
-          <p className="text-xs mt-0">{notebook.notes.at(0)?.count} notes</p>
+          <p className="text-xs mt-0">{notebook._count.notes} notes</p>
         </div>
       </div>
       <DropdownMenu>
@@ -137,7 +143,18 @@ export const NotebookCard = ({
         </DropdownMenuContent>
       </DropdownMenu>
       {/*  */}
-      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+      <Dialog
+        open={editDialogOpen}
+        onOpenChange={(newState) => {
+          if (loading) {
+            toast("Error", {
+              description: "Please wait for the current action to complete",
+            });
+            return;
+          }
+          setEditDialogOpen(newState);
+        }}
+      >
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Edit Notebook</DialogTitle>
@@ -172,7 +189,18 @@ export const NotebookCard = ({
           </Form>
         </DialogContent>
       </Dialog>
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+      <Dialog
+        open={deleteDialogOpen}
+        onOpenChange={(newState) => {
+          if (loading) {
+            toast("Error", {
+              description: "Please wait for the current action to complete",
+            });
+            return;
+          }
+          setDeleteDialogOpen(newState);
+        }}
+      >
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Delete Notebook</DialogTitle>

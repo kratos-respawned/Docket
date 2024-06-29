@@ -1,17 +1,13 @@
-"use client"
-import { createClient } from "@/lib/supabase/client";
-import { newNotebookSchema } from "@/validators/new-notebook-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { revalidateNotebook } from "./notebook-actions";
+"use client";
+
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -22,8 +18,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { newNotebookSchema } from "@/validators/new-notebook-schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, PlusIcon } from "lucide-react";
+import { useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { createNotebookAction } from "./notebook-actions";
 
 export const NewNotebookBtn = ({ className }: { className?: string }) => {
   const form = useForm<newNotebookSchema>({
@@ -33,21 +35,21 @@ export const NewNotebookBtn = ({ className }: { className?: string }) => {
     },
   });
   const [open, setOpen] = useState(false);
-  const supabase = createClient();
+  const [isloading, startTransition] = useTransition();
   const createNotebook = async (values: newNotebookSchema) => {
-    try {
-      const { data: session, error: authError } = await supabase.auth.getUser();
-      if (authError) throw new Error("Invalid User");
-      const { data: notebook, error } = await supabase
-        .from("notebook")
-        .insert({ ...values, userid: session.user.id });
-      await revalidateNotebook();
-      setOpen(false);
-    } catch (error) {
-      console.error(error);
-    } finally {
+    startTransition(async () => {
+      const { success, error } = await createNotebookAction(values.title);
+      if (error) {
+        toast.error("Error", {
+          description: error,
+        });
+        return;
+      }
+      toast.success("Success", {
+        description: success,
+      });
       form.reset();
-    }
+    });
   };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -58,7 +60,12 @@ export const NewNotebookBtn = ({ className }: { className?: string }) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent
+        className={cn(
+          "sm:max-w-[425px] transition-opacity",
+          isloading && "opacity-60 pointer-events-none"
+        )}
+      >
         <DialogHeader>
           <DialogTitle>New Notebook</DialogTitle>
         </DialogHeader>

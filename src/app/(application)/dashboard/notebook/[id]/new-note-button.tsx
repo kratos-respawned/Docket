@@ -1,13 +1,13 @@
 "use client";
 
+import { newNoteAction } from "@/app/(application)/noteActions";
 import { Button } from "@/components/ui/button";
-import { createClient } from "@/lib/supabase/client";
+
 import { cn } from "@/lib/utils";
-import { PlusIcon } from "@radix-ui/react-icons";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { revalidate } from "../../note-actions";
+import { useTransition } from "react";
+import { toast } from "sonner";
 
 export const NewNoteBtn = ({
   notebookId,
@@ -16,31 +16,18 @@ export const NewNoteBtn = ({
   notebookId: string;
   className?: string;
 }) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, startTransition] = useTransition();
   const router = useRouter();
   const createNote = async () => {
-    const supabase = createClient();
-    setLoading(true);
-    try {
-      const { data: session, error } = await supabase.auth.getUser();
-      if (error || !session) throw new Error("Invalid User");
-      const { data, error: noteError } = await supabase
-        .from("notes")
-        .insert({
-          notebookid: notebookId,
-          title: "Untitled",
-          userid: session.user.id,
-        })
-        .select(`id`)
-        .single();
-      if (noteError) throw new Error("Failed to create note");
-      await revalidate(notebookId);
-      router.push(`/editor/${data.id}`);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
+    startTransition(async () => {
+      const { success, data, error } = await newNoteAction(notebookId);
+      if (error) {
+        toast.error("Error", { description: error });
+        return;
+      }
+      toast.success("Success", { description: success });
+      router.push(`/editor/${data}`);
+    });
   };
   return (
     <Button onClick={createNote} disabled={loading} className={cn(className)}>

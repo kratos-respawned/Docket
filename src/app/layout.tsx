@@ -1,11 +1,10 @@
+import { Debug } from "@/components/debug";
 import { cn } from "@/lib/utils";
+import type { Metadata } from "next";
+import { Montserrat, Yeseva_One } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 import "./prosemirror.css";
-import type { Metadata } from "next";
-import { Yeseva_One } from "next/font/google";
-import { Montserrat } from "next/font/google";
-import { Toaster } from "sonner";
-import { Debug } from "@/components/debug";
 const yeserva = Yeseva_One({
   weight: ["400"],
   subsets: ["latin"],
@@ -45,7 +44,6 @@ export default function RootLayout({
         <Toaster/>
         <Debug/>
       </body>
-      {/* </AuthProvider> */}
     </html>
   );
 }

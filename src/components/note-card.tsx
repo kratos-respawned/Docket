@@ -1,32 +1,34 @@
 "use client";
+import {
+  deleteNoteAction,
+  toggleSharingAction,
+  toggleVisibilityAction,
+} from "@/app/(application)/noteActions";
+import { env } from "@/env";
+import { cn } from "@/lib/utils";
+import { visibility } from "@prisma/client";
+import {
+  EllipsisVertical,
+  Eye,
+  EyeOff,
+  PencilIcon,
+  Share2,
+  Trash2,
+} from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
+import { toast } from "sonner";
+import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Button } from "./ui/button";
-import {
-  Check,
-  CheckCheck,
-  Delete,
-  EllipsisVertical,
-  Eye,
-  EyeOff,
-  Pencil,
-  PencilIcon,
-  Share2,
-  ShareIcon,
-  Trash2,
-} from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 export const NoteCard = ({
   note,
@@ -34,76 +36,90 @@ export const NoteCard = ({
   note: {
     id: string;
     title: string;
+    visibility: visibility;
     placeholder: string;
-    viewable: boolean;
-    editable: boolean;
   };
 }) => {
   const router = useRouter();
-  const supabase = createClient();
-  const toggleVisibility = async () => {
-    const { data, error } = await supabase
-      .from("notes")
-      .update({ viewable: !note.viewable })
-      .eq("id", note.id);
-    if (!note.viewable) {
-      toast("Visibility Enabled", {
-        description: "This note can now be viewed by others",
-        action: {
-          label: "Copy Link",
-          onClick: () =>
-            navigator.clipboard.writeText(
-              `${process.env.NEXT_PUBLIC_URL}/notes/${note.id}`
-            ),
-        },
-      });
-    } else {
-      toast("Visibility Disabled", {
-        description: "This note can no longer be viewed by others",
-      });
-    }
 
-    if (!error) router.refresh();
-    else console.log(error);
+  const [isPending, startTransition] = useTransition();
+  const deleteNote = () => {
+    startTransition(async () => {
+      const { success, error } = await deleteNoteAction(note.id);
+      if (success) router.refresh();
+      else
+        toast("Error", {
+          description: error,
+        });
+    });
   };
   const toggleSharing = async () => {
-    const { data, error } = await supabase
-      .from("notes")
-      .update({
-        editable: !note.editable,
-        viewable: !note.editable ? true : note.viewable,
-      })
-      .eq("id", note.id);
-    if (!note.editable) {
-      toast("Sharing Enabled", {
-        description: "This note can now be edited by others",
-        action: {
-          label: "Copy Link",
-          onClick: () =>
-            navigator.clipboard.writeText(
-              `${process.env.NEXT_PUBLIC_URL}/editor/${note.id}`
-            ),
-        },
-      });
-    } else {
-      toast("Sharing Disabled", {
-        description: "This note can no longer be edited by others",
-      });
-    }
-    if (!error) router.refresh();
-    else console.log(error);
+    startTransition(async () => {
+      const { success, error } = await toggleSharingAction(
+        note.visibility,
+        note.id
+      );
+      if (error) {
+        toast("Error", {
+          description: error,
+        });
+        return;
+      }
+
+      if (note.visibility === "readOnly") {
+        toast("Sharing Enabled", {
+          description: success,
+          action: {
+            label: "Copy Link",
+            onClick: () =>
+              navigator.clipboard.writeText(
+                `${env.NEXT_PUBLIC_APP_URL}/editor/${note.id}`
+              ),
+          },
+        });
+      } else {
+        toast("Sharing Disabled", {
+          description: "This note can no longer be edited by others",
+        });
+      }
+      router.refresh();
+    });
   };
-  const deleteNote = async () => {
-    const { data, error } = await supabase
-      .from("notes")
-      .delete()
-      .eq("id", note.id);
-    if (!error) router.refresh();
-    else console.log(error);
+  const toggleVisibility = async () => {
+    startTransition(async () => {
+      const { success, error } = await toggleVisibilityAction(
+        note.visibility,
+        note.id
+      );
+      if (error) {
+        toast("Error", {
+          description: error,
+        });
+        return;
+      }
+
+      if (note.visibility === "restricted") {
+        toast("Sharing Enabled", {
+          description: success,
+          action: {
+            label: "Copy Link",
+            onClick: () =>
+              navigator.clipboard.writeText(
+                `${env.NEXT_PUBLIC_APP_URL}/notes/${note.id}`
+              ),
+          },
+        });
+      } else {
+        toast("Sharing Disabled", {
+          description: "This note can no longer be viewed by others",
+        });
+      }
+      router.refresh();
+    });
   };
 
   return (
-    <Card>
+    <Card className={cn(isPending && "opacity-50 pointer-events-none")}>
       <CardContent className="pt-6">
         <div className="flex items-center justify-between ">
           <div>
@@ -135,15 +151,15 @@ export const NoteCard = ({
                 Edit
               </DropdownMenuItem>
               <DropdownMenuItem className="gap-2" onClick={toggleVisibility}>
-                {note.viewable ? (
-                  <span className="gap-2 flex items-center">
-                    <EyeOff className="w-4 h-4 mr-2" />
-                    Disable Viewing
-                  </span>
-                ) : (
+                {note.visibility === "restricted" ? (
                   <span className="gap-2 flex items-center">
                     <Eye className="w-4 h-4 mr-2" />
                     Enable Viewing
+                  </span>
+                ) : (
+                  <span className="gap-2 flex items-center">
+                    <EyeOff className="w-4 h-4 mr-2" />
+                    Disable Viewing
                   </span>
                 )}
               </DropdownMenuItem>
@@ -151,15 +167,15 @@ export const NoteCard = ({
                 className="justify-between gap-6"
                 onClick={toggleSharing}
               >
-                {note.editable ? (
+                {note.visibility !== "editable" ? (
                   <span className="gap-2 flex items-center">
                     <Share2 className="w-4 h-4 mr-2" />
-                    Disable Sharing
+                    Enable Sharing
                   </span>
                 ) : (
                   <span className="gap-2 flex items-center">
                     <Share2 className="w-4 h-4 mr-2" />
-                    Enable Sharing
+                    Disable Sharing
                   </span>
                 )}
               </DropdownMenuItem>

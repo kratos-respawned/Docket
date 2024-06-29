@@ -1,6 +1,7 @@
-import TailwindEditor from "@/components/TailwindEditor";
+import { db } from "@/lib/db";
 import { Editor } from "./Editor";
-import { createServerClient } from "@/lib/supabase/server";
+
+import { auth } from "@/auth";
 import { notFound } from "next/navigation";
 // import TextArea from "react-textarea-autosize";
 export default async function EditorPage({
@@ -8,18 +9,26 @@ export default async function EditorPage({
 }: {
   params: { noteid: string };
 }) {
-  const supabase = createServerClient();
-  // const { data: note, error } = await supabase
-  //   .from("notes")
-  //   .select(`title,json,id,notebookid`)
-  //   .eq("id", params.noteid)
-  //   .single();
-  console.log(params.noteid);
-  const { data: note, error } = await supabase
-    .from("notes")
-    .select(`title,json,id,notebookid`)
-    .eq("id", params.noteid)
-    .single();
-  if (error || !note) notFound();
+  const session = await auth();
+  const note = await db.note
+    .findUnique({
+      where: {
+        id: params.noteid,
+      },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        notebookId: true,
+        visibility: true,
+        userID: true,
+      },
+    })
+    .catch(() => {
+      notFound();
+    });
+  if (!note) notFound();
+  if (note?.visibility !== "editable" && note?.userID !== session?.user?.id)
+    notFound();
   return <>{<Editor note={note} />}</>;
 }

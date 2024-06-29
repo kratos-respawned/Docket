@@ -1,46 +1,45 @@
 "use client";
-import TailwindEditor from "@/components/TailwindEditor";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import ResizableText from "react-textarea-autosize";
 import { NodeSelector } from "@/components/editor/editor-node-selector";
-import { TextButtons } from "@/components/editor/editor-text-buttons";
 import {
   slashCommand,
   suggestionItems,
 } from "@/components/editor/editor-suggestions";
+import { TextButtons } from "@/components/editor/editor-text-buttons";
+import { Button } from "@/components/ui/button";
+import hljs from "highlight.js";
+import { ChevronLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 import {
   EditorBubble,
   EditorCommand,
   EditorCommandEmpty,
   EditorCommandItem,
+  EditorCommandList,
   EditorContent,
-  type EditorInstance,
   EditorRoot,
   JSONContent,
-  EditorCommandList,
+  type EditorInstance,
 } from "novel";
 import { ImageResizer, handleCommandNavigation } from "novel/extensions";
-import { useRef, useState } from "react";
+import { useState, useTransition } from "react";
+import ResizableText from "react-textarea-autosize";
 import { useDebouncedCallback } from "use-debounce";
-import hljs from "highlight.js";
 
-import { handleImageDrop, handleImagePaste } from "novel/plugins";
-import { uploadFn } from "@/lib/image-upload";
-import { defaultExtensions } from "@/components/editor/editor-extension";
-import { Separator } from "@/components/ui/separator";
-import { LinkSelector } from "@/components/editor/editor-link-selector";
 import { ColorSelector } from "@/components/editor/editor-color-selector";
-import { Json, Tables } from "@/typings/supabase";
-import { createClient } from "@/lib/supabase/client";
-import { revalidate } from "../../dashboard/note-actions";
+import { defaultExtensions } from "@/components/editor/editor-extension";
+import { LinkSelector } from "@/components/editor/editor-link-selector";
+import { Separator } from "@/components/ui/separator";
+import { uploadFn } from "@/lib/image-upload";
+
+import { NoteSchema } from "@/validators/note-schema";
+import { $Enums, Prisma } from "@prisma/client";
+import { handleImageDrop, handleImagePaste } from "novel/plugins";
+import { toast } from "sonner";
+import { saveNoteAction } from "../../noteActions";
 const extensions = [...defaultExtensions, slashCommand];
 const highlightCodeblocks = (content: string) => {
   const doc = new DOMParser().parseFromString(content, "text/html");
-  doc.querySelectorAll("pre code").forEach((el) => {
-    // https://highlightjs.readthedocs.io/en/latest/api.html?highlight=highlightElement#highlightelement
+  doc.querySelectorAll("pre_code").forEach((el) => {
     hljs.highlightElement(el as HTMLElement);
   });
   return new XMLSerializer().serializeToString(doc);
@@ -49,11 +48,17 @@ const highlightCodeblocks = (content: string) => {
 export const Editor = ({
   note,
 }: {
-  note: { title: string; json: Json; id: string; notebookid: string };
+  note: {
+    id: string;
+    notebookId: string;
+    title: string;
+    content: Prisma.JsonValue;
+    visibility: $Enums.visibility
+  };
 }) => {
   const router = useRouter();
   const [content, setContent] = useState<JSONContent | undefined>(
-    note.json as JSONContent
+    note.content as JSONContent
   );
   const [Html, setHtml] = useState<string>("");
   const [placeholder, setPlaceholder] = useState<string>("");
@@ -62,27 +67,32 @@ export const Editor = ({
   const [openLink, setOpenLink] = useState(false);
   const [openColor, setOpenColor] = useState(false);
   const [title, setTitle] = useState(note.title);
-  const [saveStatus, setSaveStatus] = useState<"Saved" | "Unsaved">("Unsaved");
-  const [loading, setLoading] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"Saved" | "Unsaved" | "Saving">(
+    "Unsaved"
+  );
+  const [loading, startTransition] = useTransition();
   const saveNote = async () => {
-    const supabase = createClient();
-    setLoading(true);
-    const { data, error } = await supabase
-      .from("notes")
-      .update({
-        json: content,
-        html: Html,
-        title: title,
+    startTransition(async () => {
+      setSaveStatus("Saving");
+      const newNote: NoteSchema = {
+        id: note.id,
+        title,
+        content: content,
+        Html,
         placeholder,
-      })
-      .eq("id", note.id)
-      .single();
-    setLoading(false);
-    await revalidate(note.notebookid);
-
-    if (error) {
-      console.error(error);
-    } else setSaveStatus("Saved");
+        visibility:note.visibility,
+        notebookId: note.notebookId,
+      };
+      const { success, error } = await saveNoteAction(JSON.stringify(newNote));
+      if (success) {
+        setSaveStatus("Saved");
+      } else {
+        setSaveStatus("Unsaved");
+        toast("Error", {
+          description: error,
+        });
+      }
+    });
   };
   const debouncedUpdates = useDebouncedCallback(
     async (editor: EditorInstance) => {

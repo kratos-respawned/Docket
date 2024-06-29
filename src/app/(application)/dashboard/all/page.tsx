@@ -1,23 +1,33 @@
-import { EmptyNotes } from "@/components/empty-notes";
+import { auth } from "@/auth";
 import { NoteCard } from "@/components/note-card";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { authRedirect } from "@/lib/authredirect";
-import { createServerClient } from "@/lib/supabase/server";
+import { db } from "@/lib/db";
+
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
-export default async function NotebookPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const supabase = createServerClient();
-  await authRedirect();
-  const { data: notes, error } = await supabase
-    .from("notes")
-    .select(`id,title,placeholder,viewable,editable`);
+export default async function NotebookPage() {
+  const session = await auth();
+  if (!session) notFound();
+
+  const notes = await db.note
+    .findMany({
+      where: {
+        userID: session.user.id,
+      },
+      select: {
+        id: true,
+        title: true,
+        placeholder: true,
+        visibility: true,
+      },
+    })
+    .catch(() => {
+      notFound();
+    });
   return (
     <section>
       {/* TODO: abstract header into a separate component with search bar as children */}
@@ -50,7 +60,9 @@ export default async function NotebookPage({
                   <p className="mt-1 mb-3 text-sm text-gray-500 dark:text-gray-400">
                     Create a new note to get started
                   </p>
-                  <Link href={'/dashboard'} className={cn(buttonVariants())}>Check Notebook</Link>
+                  <Link href={"/dashboard"} className={cn(buttonVariants())}>
+                    Check Notebook
+                  </Link>
                 </div>
               </div>
             ) : (
