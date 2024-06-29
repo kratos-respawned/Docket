@@ -1,6 +1,6 @@
 {
   "name": "docket",
-  "version": "0.1.0",
+  "version": "2.0",
   "private": true,
   "scripts": {
     "dev": "next dev ",
@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "postinstall": "prisma generate && prisma db push",
     "typecheck": " tsc --noEmit",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
@@ -28,8 +29,6 @@
     "@radix-ui/react-scroll-area": "^1.0.5",
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
-    "@supabase/ssr": "latest",
-    "@supabase/supabase-js": "latest",
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tailwindcss/typography": "^0.5.13",
     "autoprefixer": "^10.4.19",
