@@ -34,19 +34,21 @@ export default async function NotebookPage() {
       {/* TODO: abstract header into a separate component with search bar as children */}
       <header className=" md:h-[60px] px-6 items-center md:border-b md:flex justify-between">
         <h1 className="block font-semibold text-xl md:text-2xl">All Notes</h1>
-        <div className="flex gap-6">
-          <div
-            className={cn(
-              buttonVariants({
-                variant: "outline",
-                className:
-                  " hidden md:inline-flex w-64 justify-start cursor-text",
-              })
-            )}
-          >
-            <div>Search....</div>
+        <div className="flex items-center">
+          <div className="hidden md:flex gap-6">
+            <div
+              className={cn(
+                buttonVariants({
+                  variant: "outline",
+                  className:
+                    " hidden md:inline-flex w-64 justify-start cursor-text",
+                })
+              )}
+            >
+              <div>Search....</div>
+            </div>
+            <AccountModal />
           </div>
-          <AccountModal />
         </div>
       </header>
       <section className=" md:px-6 flex flex-col gap-3 pt-3 pb-4   md:pb-0 ">

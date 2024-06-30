@@ -1,10 +1,8 @@
-import { Button, buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { PlusIcon, ReaderIcon } from "@radix-ui/react-icons";
-import { Book, FileIcon, MenuIcon, SettingsIcon } from "lucide-react";
-import Link from "next/link";
-import { Menu, MenuBtn } from "./dashboard-menu";
+import { AccountModal } from "@/components/Navbar";
 import { MobileNavbar } from "@/components/mobile-navbar";
+import { ReaderIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
+import { Menu } from "./dashboard-menu";
 
 export default function DashboardLayout({
   children,
@@ -23,7 +21,9 @@ export default function DashboardLayout({
             <ReaderIcon className="h-6 w-6" />
             <span className="">Docket</span>
           </Link>
-          <div className="block md:hidden w-9 aspect-square rounded-full bg-primary/50" />
+          <div className="block md:hidden ">
+          <AccountModal />
+          </div>
         </div>
         <div className="flex-1 md:pt-4">
          
