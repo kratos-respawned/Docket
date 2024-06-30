@@ -1,18 +1,18 @@
+import { uploadFn } from "@/lib/image-upload";
+import { SiYoutube } from "@icons-pack/react-simple-icons";
 import {
   CheckSquare,
   Code,
   Heading1,
   Heading2,
   Heading3,
+  ImageIcon,
   List,
   ListOrdered,
-  MessageSquarePlus,
   Text,
-  TextQuote,
+  TextQuote
 } from "lucide-react";
-import { createSuggestionItems } from "novel/extensions";
-// import { createImageUpload } from "novel/dist/plugins";
-import { Command, renderItems } from "novel/extensions";
+import { Command, createSuggestionItems, renderItems } from "novel/extensions";
 
 export const suggestionItems = createSuggestionItems([
   {
@@ -119,6 +119,54 @@ export const suggestionItems = createSuggestionItems([
     icon: <Code size={18} />,
     command: ({ editor, range }) =>
       editor.chain().focus().deleteRange(range).toggleCodeBlock().run(),
+  },
+  {
+    title: "Image",
+    description: "Upload an image from your computer.",
+    searchTerms: ["photo", "picture", "media"],
+    icon: <ImageIcon size={18} />,
+    command: ({ editor, range }) => {
+      editor.chain().focus().deleteRange(range).run();
+      // upload image
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "image/*";
+      input.onchange = async () => {
+        if (input.files?.length) {
+          const file = input.files[0];
+          const pos = editor.view.state.selection.from;
+          uploadFn(file, editor.view, pos);
+        }
+      };
+      input.click();
+    },
+  },
+  {
+    title: "Youtube",
+    description: "Embed a Youtube video.",
+    searchTerms: ["video", "youtube", "embed"],
+    icon: <SiYoutube size={18} />,
+    command: ({ editor, range }) => {
+      const videoLink = prompt("Please enter Youtube Video Link") || "";
+      const ytregex = new RegExp(
+        /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/
+      );
+
+      if (ytregex.test(videoLink)) {
+        editor
+          .chain()
+          .focus()
+          .deleteRange(range)
+          .setYoutubeVideo({
+            src: videoLink,
+          })
+          .run();
+      } else {
+        if (videoLink !== null) {
+          alert("Please enter a correct Youtube Video Link");
+        }
+      }
+    },
   },
 ]);
 

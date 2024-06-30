@@ -38,15 +38,15 @@ export default function Home() {
               <Link href="/dashboard" className={cn(buttonVariants())}>
                 Get Started
               </Link>
-              <Link
+              <a
                 target="_blank"
                 rel="noreferrer"
-                href={"/"}
+                href={"https://github.com/kratos-respawned/Docket"}
                 className={cn(buttonVariants({ variant: "outline" }))}
               >
                 <SiGithub className="mr-2 h-4 w-4" />
                 GitHub
-              </Link>
+              </a>
             </div>
           </div>
         </section>

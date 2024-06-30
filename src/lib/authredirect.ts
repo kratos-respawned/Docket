@@ -6,6 +6,6 @@ export const authRedirect = async () => {
   // const { data: session, error: authError } = await supabase.auth.getUser();
   const session = await auth();
   if (!session) {
-    redirect("/login");
+    redirect("/auth/login");
   }
 };

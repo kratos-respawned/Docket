@@ -6,7 +6,7 @@ import {
 } from "@/components/editor/editor-suggestions";
 import { TextButtons } from "@/components/editor/editor-text-buttons";
 import { Button } from "@/components/ui/button";
-import hljs from "highlight.js";
+
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
@@ -36,11 +36,14 @@ import { $Enums, Prisma } from "@prisma/client";
 import { handleImageDrop, handleImagePaste } from "novel/plugins";
 import { toast } from "sonner";
 import { saveNoteAction } from "../../noteActions";
+const hljs = require("highlight.js");
 const extensions = [...defaultExtensions, slashCommand];
 const highlightCodeblocks = (content: string) => {
   const doc = new DOMParser().parseFromString(content, "text/html");
-  doc.querySelectorAll("pre_code").forEach((el) => {
-    hljs.highlightElement(el as HTMLElement);
+  doc.querySelectorAll("pre code").forEach((el) => {
+    // @ts-ignore
+    // https://highlightjs.readthedocs.io/en/latest/api.html?highlight=highlightElement#highlightelement
+    hljs.highlightElement(el);
   });
   return new XMLSerializer().serializeToString(doc);
 };
@@ -53,7 +56,7 @@ export const Editor = ({
     notebookId: string;
     title: string;
     content: Prisma.JsonValue;
-    visibility: $Enums.visibility
+    visibility: $Enums.visibility;
   };
 }) => {
   const router = useRouter();
@@ -80,7 +83,7 @@ export const Editor = ({
         content: content,
         Html,
         placeholder,
-        visibility:note.visibility,
+        visibility: note.visibility,
         notebookId: note.notebookId,
       };
       const { success, error } = await saveNoteAction(JSON.stringify(newNote));
@@ -145,6 +148,7 @@ export const Editor = ({
           </div>
           <EditorRoot>
             <EditorContent
+            // editable={false}
               initialContent={content}
               extensions={extensions}
               className="relative  w-full min-h-[40vh]  bg-background   "
