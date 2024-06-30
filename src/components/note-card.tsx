@@ -19,7 +19,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import {
   DropdownMenu,
@@ -46,9 +45,11 @@ export const NoteCard = ({
   const deleteNote = () => {
     startTransition(async () => {
       const { success, error } = await deleteNoteAction(note.id);
-      if (success) router.refresh();
-      else
-        toast("Error", {
+      if (success) {
+        toast.success(success);
+        router.refresh();
+      } else
+        toast.error("Error", {
           description: error,
         });
     });
@@ -60,14 +61,14 @@ export const NoteCard = ({
         note.id
       );
       if (error) {
-        toast("Error", {
+        toast.error("Error", {
           description: error,
         });
         return;
       }
 
-      if (note.visibility === "readOnly") {
-        toast("Sharing Enabled", {
+      if (note.visibility !== "editable") {
+        toast.success("Sharing Enabled", {
           description: success,
           action: {
             label: "Copy Link",
@@ -78,8 +79,9 @@ export const NoteCard = ({
           },
         });
       } else {
-        toast("Sharing Disabled", {
-          description: "This note can no longer be edited by others",
+        toast.warning("Sharing Disabled", {
+          description:
+            "This note can no longer be edited by others but can still be viewed",
         });
       }
       router.refresh();
@@ -92,14 +94,14 @@ export const NoteCard = ({
         note.id
       );
       if (error) {
-        toast("Error", {
+        toast.error("Error", {
           description: error,
         });
         return;
       }
 
       if (note.visibility === "restricted") {
-        toast("Sharing Enabled", {
+        toast.success("Sharing Enabled", {
           description: success,
           action: {
             label: "Copy Link",
@@ -110,7 +112,7 @@ export const NoteCard = ({
           },
         });
       } else {
-        toast("Sharing Disabled", {
+        toast.success("Sharing Disabled", {
           description: "This note can no longer be viewed by others",
         });
       }
@@ -121,7 +123,7 @@ export const NoteCard = ({
   return (
     <Card className={cn(isPending && "opacity-50 pointer-events-none")}>
       <CardContent className="pt-6">
-        <div className="flex items-center justify-between ">
+        <div className="flex items-center gap-3 justify-between ">
           <div>
             <Link
               href={`/notes/${note.id}`}
@@ -134,10 +136,8 @@ export const NoteCard = ({
             </p>
           </div>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size={"icon"} variant={"outline"}>
-                <EllipsisVertical />
-              </Button>
+            <DropdownMenuTrigger>
+              <EllipsisVertical />
             </DropdownMenuTrigger>
 
             <DropdownMenuContent className="min-w-44">
@@ -167,15 +167,15 @@ export const NoteCard = ({
                 className="justify-between gap-6"
                 onClick={toggleSharing}
               >
-                {note.visibility !== "editable" ? (
+                {note.visibility === "editable" ? (
                   <span className="gap-2 flex items-center">
                     <Share2 className="w-4 h-4 mr-2" />
-                    Enable Sharing
+                    Disable Sharing
                   </span>
                 ) : (
                   <span className="gap-2 flex items-center">
                     <Share2 className="w-4 h-4 mr-2" />
-                    Disable Sharing
+                    Enable Sharing
                   </span>
                 )}
               </DropdownMenuItem>

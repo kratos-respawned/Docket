@@ -17,7 +17,8 @@ export const newNoteAction = async (notebookId: string) => {
         userID: session.user.id as string,
       },
     });
-    return { success: "Note Created", data: data.id };
+    revalidatePath(`/notebook/${notebookId}`);
+    return { success: "Note Created, Redirecting in 3 seconds", data: data.id };
   } catch (error) {
     return { error: "Failed to create note" };
   }
@@ -27,7 +28,8 @@ export const saveNoteAction = async (noteStr: string) => {
     const unSafe = JSON.parse(noteStr);
     const data = NoteSchema.parse(unSafe);
     const session = await auth();
-    if ( data.visibility!=="editable" && !session) return { error: "Not Authenticated" };
+    if (data.visibility !== "editable" && !session)
+      return { error: "Not Authenticated" };
     const resp = await db.note
       .update({
         where: {

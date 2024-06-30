@@ -31,7 +31,13 @@ export const NewNoteBtn = ({
   };
   return (
     <Button onClick={createNote} disabled={loading} className={cn(className)}>
-      {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "New Note"}
+      {loading ? (
+        <>
+          <Loader2 className="w-5 h-5 animate-spin mr-2" /> Cooking
+        </>
+      ) : (
+        "New Note"
+      )}
     </Button>
   );
 };

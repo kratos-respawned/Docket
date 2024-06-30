@@ -1,10 +1,11 @@
-import { auth } from "@/auth";
-import { cn } from "@/lib/utils";
+"use client";
+
 import { ReaderIcon } from "@radix-ui/react-icons";
+import { User } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { Suspense } from "react";
 import { SignInModal } from "./sign-in-modal";
-import { buttonVariants } from "./ui/button";
+import { Avatar } from "./ui/avatar";
 import { UserAccountNav } from "./user-account-nav";
 export const Navbar = () => {
   return (
@@ -14,19 +15,19 @@ export const Navbar = () => {
         <span className="sr-only">Docket</span>
       </Link>
       <div className=" flex relative items-center gap-3">
-        <Suspense fallback={<div className={cn(buttonVariants({variant:"secondary"}))}>Loading...</div>}>
-          <AccountModal />
-        </Suspense>
+        <AccountModal />
       </div>
     </header>
   );
 };
 
-export const AccountModal = async () => {
-  const session = await auth();
-  return (
-    <>
-      {session?.user ? <UserAccountNav user={session.user} /> : <SignInModal />}
-    </>
-  );
+export const AccountModal = () => {
+  const session = useSession();
+  if (session.status === "loading")
+    return (
+      <Avatar className="bg-muted border animate-pulse grid place-items-center">
+        <User />
+      </Avatar>
+    );
+  return <>{session?.data?.user ? <UserAccountNav /> : <SignInModal />}</>;
 };

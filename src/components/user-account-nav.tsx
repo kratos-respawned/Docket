@@ -1,3 +1,4 @@
+"use client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,22 +11,22 @@ import Link from "next/link";
 import { logout } from "@/lib/auth/actions/logout";
 import { ReaderIcon } from "@radix-ui/react-icons";
 import { LogOut, UserIcon } from "lucide-react";
-import { User } from "next-auth";
+import { useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
-export async function UserAccountNav({user}:{user:User}) {
+export function UserAccountNav() {
+  const session = useSession();
+  const user = session.data?.user;
+  if (!user) return null;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar>
           <AvatarImage
-            src={
-              user.image ||
-              "https://api.dicebear.com/8.x/pixel-art/svg"
-            }
+            src={user?.image || "https://api.dicebear.com/8.x/pixel-art/svg"}
           />
           <AvatarFallback>
-            {((user.name || "Anon") as string)
+            {((user?.name || "Anon") as string)
               ?.split(" ")
               .map((name) => name[0])
               .join("")}
@@ -56,9 +57,14 @@ export async function UserAccountNav({user}:{user:User}) {
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={logout}>
-          <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
-          <button>Sign Out</button>
+        <DropdownMenuItem asChild>
+          <button
+            onClick={async () => await logout()}
+            className="w-full inline-flex"
+          >
+            <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
+            Sign Out
+          </button>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
