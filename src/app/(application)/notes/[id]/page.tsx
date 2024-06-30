@@ -50,9 +50,11 @@ export default async function NotePage({ params }: { params: { id: string } }) {
             </Link>
           )}
         </div>
-        <section className="prose  px-4 md:px-8 mt-8 max-w-4xl mx-auto break-words">
+        <section className="  px-4 md:px-8 mt-8 max-w-4xl mx-auto break-words">
+          <div className="prose ">
           <h1 >{note.title}</h1>
-          <div className=" prose-invert flex space-x-4">
+          </div>
+          <div className=" my-4 mb-8 flex space-x-4">
             {
               <div
                 key={note.user.id}
@@ -76,7 +78,7 @@ export default async function NotePage({ params }: { params: { id: string } }) {
               </div>
             }
           </div>
-          <section className="" dangerouslySetInnerHTML={{ __html: note.html || "" }} />
+          <section className="prose" dangerouslySetInnerHTML={{ __html: note.html || "" }} />
         </section>
       </main>
     </>
