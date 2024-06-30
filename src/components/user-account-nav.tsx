@@ -7,27 +7,25 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 
-import { auth } from "@/auth";
 import { logout } from "@/lib/auth/actions/logout";
 import { ReaderIcon } from "@radix-ui/react-icons";
-import { LogOut, User } from "lucide-react";
+import { LogOut, UserIcon } from "lucide-react";
+import { User } from "next-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
-export async function UserAccountNav() {
-  const session = await auth();
-  if (!session) return null;
+export async function UserAccountNav({user}:{user:User}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar>
           <AvatarImage
             src={
-              session?.user.image ||
+              user.image ||
               "https://api.dicebear.com/8.x/pixel-art/svg"
             }
           />
           <AvatarFallback>
-            {((session.user.name || "Anon") as string)
+            {((user.name || "Anon") as string)
               ?.split(" ")
               .map((name) => name[0])
               .join("")}
@@ -37,16 +35,16 @@ export async function UserAccountNav() {
       <DropdownMenuContent align="end">
         <div className="flex items-center justify-start gap-2 p-2">
           <div className="flex flex-col space-y-1 leading-none">
-            <p className="font-medium">{session.user.name}</p>
+            <p className="font-medium">{user.name}</p>
             <p className="w-[200px] truncate text-sm text-muted-foreground">
-              {session.user.email}
+              {user.email}
             </p>
           </div>
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/dashboard" className="cursor-pointer">
-            <User className="mr-2 h-4 w-4" aria-hidden="true" />
+            <UserIcon className="mr-2 h-4 w-4" aria-hidden="true" />
             Account
           </Link>
         </DropdownMenuItem>

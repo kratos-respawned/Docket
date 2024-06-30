@@ -17,15 +17,15 @@ export default function Home() {
             " mx-auto flex max-w-[980px] flex-col items-center gap-5 py-8 md:py-12 md:pb-8 lg:py-24 lg:pb-20"
           }
         >
-          <Link
-            href="/docs/changelog"
+          <a
+            href="https://github.com/kratos-respawned/Docket"
             className="inline-flex items-center rounded-lg bg-muted px-3 py-1 text-sm font-medium"
           >
             <Blocks className="h-4 w-4" />{" "}
             <Separator className="mx-2 h-4" orientation="vertical" />{" "}
             <span>Introducing Docket 2.0</span>
             <ArrowRightIcon className="ml-1 h-4 w-4" />
-          </Link>
+          </a>
           <div className="grid gap-3">
             <h1 className="text-center animate-in font-heading text-2xl sm:text-3xl font-bold leading-tight  mx-auto md:text-5xl lg:leading-[1.1]">
               Your Personal Note Taking App

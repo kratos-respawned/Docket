@@ -4,6 +4,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { authRedirect } from "@/lib/authredirect";
 
+import { AccountModal } from "@/components/Navbar";
 import { db } from "@/lib/db";
 import { cn } from "@/lib/utils";
 import { NewNotebookBtn } from "./new-notebook-button";
@@ -36,7 +37,7 @@ export default async function NotebookPage() {
           >
             <div>Search....</div>
           </div>
-          <div className="hidden  md:block w-10 aspect-square rounded-full bg-primary/50" />
+          <AccountModal />
         </div>
       </header>
       <section className=" md:px-6 flex flex-col gap-3 pt-3 pb-4   md:pb-0 ">

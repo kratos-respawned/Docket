@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { AccountModal } from "@/components/Navbar";
 import { NoteCard } from "@/components/note-card";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -45,7 +46,7 @@ export default async function NotebookPage() {
           >
             <div>Search....</div>
           </div>
-          <div className="hidden  md:block w-10 aspect-square rounded-full bg-primary/50" />
+          <AccountModal />
         </div>
       </header>
       <section className=" md:px-6 flex flex-col gap-3 pt-3 pb-4   md:pb-0 ">
