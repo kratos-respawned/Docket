@@ -35,7 +35,7 @@ import { NoteSchema } from "@/validators/note-schema";
 import { $Enums, Prisma } from "@prisma/client";
 import { handleImageDrop, handleImagePaste } from "novel/plugins";
 import { toast } from "sonner";
-import { saveNoteAction } from "../../noteActions";
+import { saveNoteAction } from "../../actions/noteActions";
 const hljs = require("highlight.js");
 const extensions = [...defaultExtensions, slashCommand];
 const highlightCodeblocks = (content: string) => {
@@ -148,7 +148,7 @@ export const Editor = ({
           </div>
           <EditorRoot>
             <EditorContent
-            // editable={false}
+              // editable={false}
               initialContent={content}
               extensions={extensions}
               className="relative  w-full min-h-[40vh]  bg-background   "
@@ -167,7 +167,6 @@ export const Editor = ({
               }}
               onUpdate={({ editor }) => {
                 debouncedUpdates(editor);
-                // setSaveStatus("Unsaved");
               }}
               slotAfter={<ImageResizer />}
             >

@@ -1,3 +1,5 @@
+import { cx } from "class-variance-authority";
+import { common, createLowlight } from "lowlight";
 import {
   AIHighlight,
   CharacterCount,
@@ -14,9 +16,6 @@ import {
   Youtube,
 } from "novel/extensions";
 import { UploadImagesPlugin } from "novel/plugins";
-
-import { cx } from "class-variance-authority";
-import { common, createLowlight } from "lowlight";
 
 //TODO I am using cx here to get tailwind autocomplete working, idk if someone else can write a regex to just capture the class key in objects
 const aiHighlight = AIHighlight;

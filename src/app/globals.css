@@ -94,7 +94,9 @@
     @apply bg-background text-foreground;
   }
 }
-
+[data-type="toggle"][data-hidden="true"] {
+  display: none;
+}
 .animate-in {
   animation: animateIn 0.3s ease 0.15s both;
 }

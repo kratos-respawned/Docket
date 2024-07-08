@@ -1,6 +1,6 @@
 "use client";
 
-import { newNoteAction } from "@/app/(application)/noteActions";
+import { newNoteAction } from "@/app/(application)/actions/noteActions";
 import { Button } from "@/components/ui/button";
 
 import { cn } from "@/lib/utils";

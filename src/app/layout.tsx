@@ -1,11 +1,10 @@
-import "@/app/_supressLogs";
 import { Debug } from "@/components/debug";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
 import { Montserrat, Yeseva_One } from "next/font/google";
 import { Toaster } from "sonner";
-import { LogSupressor } from "./SupressProvider";
+
 import "./globals.css";
 import "./prosemirror.css";
 const yeserva = Yeseva_One({
@@ -35,21 +34,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
-      <LogSupressor>
-        <SessionProvider>
-          <body
-            className={cn(
-              montserrat.className,
-              yeserva.variable,
-              montserrat.variable
-            )}
-          >
-            {children}
-            <Toaster />
-            <Debug />
-          </body>
-        </SessionProvider>
-      </LogSupressor>
+      <SessionProvider>
+        <body
+          className={cn(
+            montserrat.className,
+            yeserva.variable,
+            montserrat.variable
+          )}
+        >
+          {children}
+          <Toaster />
+          <Debug />
+        </body>
+      </SessionProvider>
     </html>
   );
 }

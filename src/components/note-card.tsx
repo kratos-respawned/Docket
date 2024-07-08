@@ -1,19 +1,19 @@
 "use client";
 import {
-  deleteNoteAction,
-  toggleSharingAction,
-  toggleVisibilityAction,
-} from "@/app/(application)/noteActions";
+    deleteNoteAction,
+    toggleSharingAction,
+    toggleVisibilityAction,
+} from "@/app/(application)/actions/noteActions";
 import { env } from "@/env";
 import { cn } from "@/lib/utils";
 import { visibility } from "@prisma/client";
 import {
-  EllipsisVertical,
-  Eye,
-  EyeOff,
-  PencilIcon,
-  Share2,
-  Trash2,
+    EllipsisVertical,
+    Eye,
+    EyeOff,
+    PencilIcon,
+    Share2,
+    Trash2,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -21,12 +21,12 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 import { Card, CardContent } from "./ui/card";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 
 export const NoteCard = ({

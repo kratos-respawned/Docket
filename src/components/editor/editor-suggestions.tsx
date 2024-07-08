@@ -53,6 +53,16 @@ export const suggestionItems = createSuggestionItems([
     },
   },
   {
+    title:"Details",
+    description:"Hide details in a toggle.",
+    searchTerms:["details","summary","toggle"],
+    icon:<Heading1 size={18}/>,
+    command:({editor,range})=>{
+      // @ts-expect-error
+      editor.chain().focus().deleteRange(range).toggleToggle().run()
+    }
+  },
+  {
     title: "Heading 2",
     description: "Medium section heading.",
     searchTerms: ["subtitle", "medium"],

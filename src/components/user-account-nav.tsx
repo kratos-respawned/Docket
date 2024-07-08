@@ -12,10 +12,12 @@ import { logout } from "@/lib/auth/actions/logout";
 import { ReaderIcon } from "@radix-ui/react-icons";
 import { LogOut, UserIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 export function UserAccountNav() {
   const session = useSession();
+  const router = useRouter();
   const user = session.data?.user;
   if (!user) return null;
   return (
@@ -59,7 +61,10 @@ export function UserAccountNav() {
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <button
-            onClick={async () => await logout()}
+            onClick={async () => {
+              await logout();
+              router.refresh();
+            }}
             className="w-full inline-flex"
           >
             <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />

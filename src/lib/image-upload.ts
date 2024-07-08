@@ -1,36 +1,34 @@
+import { getSignedUrlAction } from "@/app/(application)/actions/image-upload.actions";
+import axios from "axios";
 import { createImageUpload } from "novel/plugins";
 import { toast } from "sonner";
-
 const onUpload = (file: File) => {
-  const promise = fetch("/api/upload", {
-    method: "POST",
-    headers: {
-      "content-type": file?.type || "application/octet-stream",
-      "x-vercel-filename": file?.name || "image.png",
-    },
-    body: file,
+  const promise = getSignedUrlAction({
+    filename: file.name,
+    size: file.size,
+    type: file.type,
   });
-
   return new Promise((resolve, reject) => {
     toast.promise(
-      promise.then(async (res) => {
-        // Successfully uploaded image
-        if (res.status === 200) {
-          const { url } = (await res.json()) as { url: string };
-          // preload the image
-          const image = new Image();
-          image.src = url;
-          image.onload = () => {
-            resolve(url);
-          };
-          // No blob store configured
-        } else if (res.status === 401) {
-          resolve(file);
-          throw new Error("`BLOB_READ_WRITE_TOKEN` environment variable not found, reading image locally instead.");
-          // Unknown error
-        } else {
-          throw new Error("Error uploading image. Please try again.");
-        }
+      promise.then(async (result) => {
+        const [response, error] = result;
+        if (error) throw new Error(error.message);
+        const { imageUrl, presignedUrl } = response;
+        const img = await axios
+          .put(presignedUrl, file, {
+            headers: {
+              "Content-Type": file.type,
+            },
+          })
+          .catch((e) => {
+            console.log(e);
+            throw new Error("Error uploading image. Please try again.");
+          });
+        const image = new Image();
+        image.src = imageUrl;
+        image.onload = () => {
+          resolve(imageUrl);
+        };
       }),
       {
         loading: "Uploading image...",
@@ -39,7 +37,7 @@ const onUpload = (file: File) => {
           reject(e);
           return e.message;
         },
-      },
+      }
     );
   });
 };
