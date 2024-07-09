@@ -2,17 +2,24 @@ import { EmptyNotebook } from "@/components/empty-notebook";
 import { NotebookCard } from "@/components/notebook-card";
 import { buttonVariants } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { authRedirect } from "@/lib/authredirect";
 
+import { auth } from "@/auth";
 import { AccountModal } from "@/components/Navbar";
 import { db } from "@/lib/db";
 import { cn } from "@/lib/utils";
+import { redirect } from "next/navigation";
 import { NewNotebookBtn } from "./new-notebook-button";
 
 export const dynamic = "force-dynamic";
 export default async function NotebookPage() {
-  await authRedirect();
+  const session = await auth();
+  if (!session) {
+    redirect("/auth/login");
+  }
   const data = await db.notebook.findMany({
+    where: {
+      userId: session.user.id,
+    },
     include: {
       _count: {
         select: {

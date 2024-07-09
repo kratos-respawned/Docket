@@ -3,12 +3,12 @@ import { NoteCard } from "@/components/note-card";
 import { buttonVariants } from "@/components/ui/button";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { authRedirect } from "@/lib/authredirect";
 
+import { auth } from "@/auth";
 import { AccountModal } from "@/components/Navbar";
 import { db } from "@/lib/db";
 import { cn } from "@/lib/utils";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { NewNoteBtn } from "./new-note-button";
 
 export default async function NotebookPage({
@@ -16,9 +16,12 @@ export default async function NotebookPage({
 }: {
   params: { id: string };
 }) {
-  await authRedirect();
+  const session = await auth();
+  if (!session) {
+    redirect("/auth/login");
+  }
   const notebookData = await db.notebook.findUnique({
-    where: { id: params.id },
+    where: { id: params.id, userId: session.user.id },
   });
   if (!notebookData) notFound();
   const notes = await db.note.findMany({
