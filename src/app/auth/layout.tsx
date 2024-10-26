@@ -14,15 +14,16 @@ export default function AuthLayout({
         <Link href="/" passHref>
           <div className="relative z-20 flex gap-2 items-center text-lg font-medium">
             <Mountain className="h-6 w-6" />
-            Trekyaari
+            Docket
           </div>
         </Link>
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
             <p className="text-lg">
-              "Every once in a while, I like to sit and think about my life. The
+              "Best writing experience I've had in a long time."
+              {/* "Every once in a while, I like to sit and think about my life. The
               mountains always give clarity. That's why I keep coming back.
-              Brahmatal ticked off the list, many MANY more to go!"
+              Brahmatal ticked off the list, many MANY more to go!" */}
             </p>
             <footer className="text-sm">Mudit Kapoor</footer>
           </blockquote>
@@ -31,6 +32,4 @@ export default function AuthLayout({
       {children}
     </main>
   );
-};
-
-
+}

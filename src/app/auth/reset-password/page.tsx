@@ -12,7 +12,7 @@ import { ResetPasswordMailForm } from "@/components/auth/reset-password-email-fo
 export const metadata: Metadata = {
   title: "Reset Password ",
   description:
-    " Reset your Trekyaari account password to access your saved trips, reviews, and more.",
+    " Reset your Docket account password to access your saved trips, reviews, and more.",
 };
 
 export default async function PasswordResetPage({

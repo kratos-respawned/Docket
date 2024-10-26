@@ -10,7 +10,7 @@ import { redirect } from "next/navigation";
 export const metadata: Metadata = {
   title: "Create Account ",
   description:
-    " Create your Trekyaari account to access your saved trips, reviews, and more.",
+    " Create your Docket account to access your saved trips, reviews, and more.",
 };
 
 export default async function SignUpPage() {

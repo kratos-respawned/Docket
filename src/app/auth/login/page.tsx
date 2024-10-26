@@ -7,11 +7,10 @@ import { auth } from "@/auth";
 import { SignInForm } from "@/components/auth/sign-in-form";
 import { redirect } from "next/navigation";
 
-
 export const metadata: Metadata = {
   title: "Sign In ",
   description:
-    " Sign in to your Trekyaari account to access your saved trips, reviews, and more.",
+    " Sign in to your Docket account to access your saved trips, reviews, and more.",
 };
 
 export default async function AuthenticationPage() {
